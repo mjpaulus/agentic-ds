@@ -49,9 +49,9 @@ TypeScript throughout. Vanilla Web Components, no framework. Vite for build and 
 
 **M2, days 5–9: Validator stages 1–3.** Gatekeeping (mutability, structural and API hashing), ajv schema validation, static constraint modules (token-usage, api-stability, mutability, composition-static). Build the adversarial suite alongside, not after. Exit: static portion of P2 green.
 
-**M3, days 10–14: Generator + Stage 4.** Definition-to-component generation, headless rendering, axe-core per context, slot probes, performance measurement. Register ds-button, demo page renders it in both contexts. Exit: P2 fully green, P4 partially (button only).
+**M3, days 10–14: Generator + Stage 4.** Definition-to-component generation, headless rendering, axe-core per context, slot probes, performance measurement. Register ds-button, demo page renders it in both contexts. Upgrade `structuralHash` in validator/hash.ts from the M2 whitespace-normalized string hash to a real template-AST hash now that the generator emits templates (decision recorded 2026-07-11). Exit: P2 fully green, P4 partially (button only).
 
-**M4, days 15–17: Component set.** Remaining atoms and molecules: Text Input, Label, Checkbox, Badge, Form Field, Search Bar. Form Field must demonstrate behavioral ctx tokens (validation-mode). Exit: P4 green.
+**M4, days 15–17: Component set.** Remaining atoms and molecules: Text Input, Label, Checkbox, Badge, Form Field, Search Bar. Form Field must demonstrate behavioral ctx tokens (validation-mode). First step: delete the M2 composition-stub registrations for ds-form-field and ds-search-bar (`registerCompositionStubs` in test/helpers.ts) so tests referencing them fail until the real components register — the stubs were name reservations, not implementations (decision recorded 2026-07-11). Exit: P4 green.
 
 **M5, days 18–21: Generation flow + evolution.** Structured-form requirement input → AI-generated definition → pipeline → registration, with justification. Synthetic telemetry, gate logic, promotion and auto-deprecation. Exit: P3 and P5 green, demo script runs end to end.
 
