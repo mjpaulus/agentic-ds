@@ -3,10 +3,12 @@
 // on the first rejection. Nothing registers without a passing record.
 
 import type { Registry, RegistryEntry } from "../registry/registry.js";
+import type { TokensFile } from "../tokens/types.js";
 import { apiSignatureHash, structuralHash } from "./hash.js";
 import { readClaimedName, runStage1 } from "./stage1-gatekeeping.js";
 import { runStage2 } from "./stage2-schema.js";
 import { runStage3 } from "./stage3-constraints.js";
+import { runStage4 } from "./stage4-rendered.js";
 import type { Candidate, RejectionDetail, StageResult, ValidationRecord } from "./types.js";
 
 function rejectedRecord(
@@ -26,7 +28,11 @@ function rejectedRecord(
   };
 }
 
-export function runPipeline(candidate: Candidate, registry: Registry): ValidationRecord {
+export async function runPipeline(
+  candidate: Candidate,
+  registry: Registry,
+  tokenData?: TokensFile
+): Promise<ValidationRecord> {
   const stages: StageResult[] = [];
   const claimedName = readClaimedName(candidate.definition);
 
@@ -83,11 +89,16 @@ export function runPipeline(candidate: Candidate, registry: Registry): Validatio
     return rejectedRecord(claimedName, stages, stage3.rejection, stage3.warnings);
   }
 
-  // Stage 4: rendered verification — no-op placeholder for M2.
-  stages.push({ stage: 4, name: "stage4-rendered-verification", passed: true, notes: ["stage4: deferred to M3"] });
+  // Stage 4: rendered verification.
+  const stage4 = await runStage4(candidate, definition, tokenData);
+  stages.push(stage4.stageResult);
+  const allWarnings = [...stage3.warnings, ...stage4.warnings];
+  if (stage4.rejection) {
+    return rejectedRecord(claimedName, stages, stage4.rejection, allWarnings);
+  }
 
   // Stage 5: registration.
-  const flagged = stage3.warnings.length > 0;
+  const flagged = allWarnings.length > 0;
   const outcome: ValidationRecord["outcome"] = flagged ? "flagged" : "registered";
 
   const record: ValidationRecord = {
@@ -95,7 +106,7 @@ export function runPipeline(candidate: Candidate, registry: Registry): Validatio
     passed: true,
     outcome,
     stages,
-    warnings: stage3.warnings,
+    warnings: allWarnings,
     timestamp: new Date().toISOString(),
   };
 

@@ -16,6 +16,15 @@ export interface Candidate {
   definition: unknown;
   css?: string;
   template?: string;
+  /**
+   * The generated Web Component ES module source (generator/generate.ts
+   * output). Stage 4 gates on this field's presence: candidates without a
+   * source artifact skip rendered verification (deferred) UNLESS the
+   * definition declares an accessibility constraint, in which case a
+   * missing artifact is itself a rejection — a constraint that cannot be
+   * checked does not pass.
+   */
+  source?: string;
   requestType: RequestType;
 }
 

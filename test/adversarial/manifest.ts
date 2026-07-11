@@ -11,7 +11,8 @@
 
 export type ExpectedRejection =
   | { stage: 1 | 2; module: string; constraintId?: null }
-  | { stage: 3; module: "stage3-constraints"; constraintId: string };
+  | { stage: 3; module: "stage3-constraints"; constraintId: string }
+  | { stage: 4; module: string; constraintId: string; messageContains?: string };
 
 export type Setup = "none" | "register-ds-button" | "register-fixed" | "register-loosen-base";
 
@@ -20,6 +21,10 @@ export interface AdversarialCase {
   name: string;
   file: string;
   cssFile?: string;
+  /** Hand-authored "generated-shaped" JS fixture (Candidate.source) for Stage 4 cases that need a live instance. */
+  sourceFile?: string;
+  /** Set for the contrast fixture: signals the test harness to inject synthetic contrastPair token data instead of the real tokens.json. */
+  useSyntheticContrastTokens?: boolean;
   requestType: "register" | "mutate";
   setup: Setup;
   /** Template string to attach to the candidate, when the case depends on structural-hash matching. */
@@ -43,9 +48,11 @@ export const adversarialManifest: AdversarialCase[] = [
     name: "contrast-failure-one-context",
     file: "contrast-failure-one-context.json",
     cssFile: "contrast-failure-one-context.css",
+    sourceFile: "contrast-failure-one-context.js",
+    useSyntheticContrastTokens: true,
     requestType: "register",
     setup: "none",
-    expected: { skip: "Stage 4 / M3 — requires a rendered instance per context." },
+    expected: { stage: 4, module: "stage4-accessibility-contrast", constraintId: "contrast-a11y", messageContains: "enterprise-saas" },
   },
   {
     name: "api-signature-drift-adaptive",
@@ -86,9 +93,10 @@ export const adversarialManifest: AdversarialCase[] = [
   {
     name: "slot-content-violation",
     file: "slot-content-violation.json",
+    sourceFile: "slot-content-violation.js",
     requestType: "register",
     setup: "none",
-    expected: { skip: "Stage 4 / M3 — requires a rendered instance and a live slot probe." },
+    expected: { stage: 4, module: "stage4-composition", constraintId: "slot-composition", messageContains: "icon" },
   },
   {
     name: "flag-empty-rationale",

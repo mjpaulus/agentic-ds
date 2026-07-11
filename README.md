@@ -10,7 +10,7 @@ The system generates, adapts, and evolves Web Components under machine-enforceab
 |---|---|---|
 | M1 | Token pipeline (parse → validate → per-context CSS) | ✅ P1 criteria green |
 | M2 | Validator stages 1–3 + adversarial suite | ✅ static portion of P2 green |
-| M3 | Generator + rendered verification (Stage 4) | not started |
+| M3 | Generator + rendered verification (Stage 4) | ✅ P2 fully green, P4 partial (button) |
 | M4 | Component set (7 components, both contexts) | not started |
 | M5 | Generation flow + evolution gate | not started |
 
@@ -48,8 +48,11 @@ See [specs/success-criteria.md](specs/success-criteria.md) for the falsifiable c
 ```
 /specs             The five contract files. Read these first; they are contracts, not references.
 /tokens            Token build: parser, rules-block validator, CSS emitter, P1 tests.
-/validator         Pipeline stages 1–3: gatekeeping, ajv schema validation, constraint modules
-                   (token-usage, api-stability, mutability, composition). Stage 4 lands in M3.
+/validator         Pipeline stages 1–4: gatekeeping, ajv schema validation, constraint modules
+                   (token-usage, api-stability, mutability, composition), rendered verification
+                   (contrast from token data, a11y probes, slot probes, perf budgets).
+/generator         Deterministic definition → Web Component source. Archetype-based; no LLM.
+/components        Generated output. Never hand-edit; regenerate via npm run build:components.
 /registry          Component registry: validation records, structural + API hashes,
                    one-incumbent-per-context invariant enforced on every write.
 /test/adversarial  11 deliberately broken definitions, each violating exactly one constraint.

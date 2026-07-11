@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "build:tokens": "tsx tokens/build.ts",
+    "build:components": "tsx generator/build.ts",
     "test": "vitest run",
     "test:p1": "vitest run tokens",
     "test:p2": "vitest run validator registry test"

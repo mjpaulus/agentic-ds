@@ -3,9 +3,10 @@
 import { readFileSync } from "node:fs";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
+import { generateComponent } from "../generator/generate.js";
 import { Registry } from "../registry/registry.js";
 import { runPipeline } from "../validator/pipeline.js";
-import type { Candidate, ValidationRecord } from "../validator/types.js";
+import type { Candidate, ComponentDefinition, ValidationRecord } from "../validator/types.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -26,7 +27,7 @@ export function loadText(relativePath: string): string {
  * test-fixture design call — see the final report for the rejected
  * alternative (loosening the composition check to skip allowedParents).
  */
-export function registerCompositionStubs(registry: Registry): void {
+export async function registerCompositionStubs(registry: Registry): Promise<void> {
   for (const name of ["ds-form-field", "ds-search-bar"]) {
     const definition = {
       name,
@@ -48,11 +49,28 @@ export function registerCompositionStubs(registry: Registry): void {
       provenance: { author: "human", createdAt: "2026-07-11T00:00:00Z" },
     };
     const candidate: Candidate = { definition, requestType: "register" };
-    const record = runPipeline(candidate, registry);
+    const record = await runPipeline(candidate, registry);
     if (!record.passed) {
       throw new Error(`Failed to register composition stub "${name}": ${JSON.stringify(record.rejection)}`);
     }
   }
+}
+
+/**
+ * Build a full register Candidate for ds-button using the real generator
+ * (generator/generate.ts), so M3 tests exercise Stage 4 against actual
+ * generated output rather than a hand-authored fixture standing in for it.
+ */
+export function dsButtonCandidate(): Candidate {
+  const definition = loadJson("../specs/ds-button.definition.json") as ComponentDefinition;
+  const generated = generateComponent(definition);
+  return {
+    definition,
+    requestType: "register",
+    source: generated.source,
+    template: generated.template,
+    css: generated.css,
+  };
 }
 
 export function assertRejected(record: ValidationRecord): asserts record is ValidationRecord & { rejection: NonNullable<ValidationRecord["rejection"]> } {

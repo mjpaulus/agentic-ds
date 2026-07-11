@@ -39,3 +39,41 @@ describe("hash determinism", () => {
     expect(structuralHash(a)).not.toBe(structuralHash(c));
   });
 });
+
+describe("structuralHash: template-AST hash (M3)", () => {
+  it("is invariant to attribute order", () => {
+    const a = '<button type="button" class="x"><slot></slot></button>';
+    const b = '<button class="x" type="button"><slot></slot></button>';
+    expect(structuralHash(a)).toBe(structuralHash(b));
+  });
+
+  it("is invariant to whitespace differences between byte-different but structurally identical templates", () => {
+    const a = '<button type="button">\n\t<slot name="icon"></slot>\n\t<slot></slot>\n</button>';
+    const b = '<button   type="button"><slot name="icon"></slot>   <slot></slot></button>';
+    expect(structuralHash(a)).toBe(structuralHash(b));
+  });
+
+  it("drops comments without affecting the hash", () => {
+    const a = "<button><slot></slot></button>";
+    const b = "<button><!-- a comment --><slot></slot></button>";
+    expect(structuralHash(a)).toBe(structuralHash(b));
+  });
+
+  it("changes when an element is added (real structural change)", () => {
+    const a = "<button><slot></slot></button>";
+    const b = "<button><slot></slot><span>extra</span></button>";
+    expect(structuralHash(a)).not.toBe(structuralHash(b));
+  });
+
+  it("changes when an attribute is added (real structural change)", () => {
+    const a = "<button><slot></slot></button>";
+    const b = '<button data-extra="1"><slot></slot></button>';
+    expect(structuralHash(a)).not.toBe(structuralHash(b));
+  });
+
+  it("changes when meaningful text content differs", () => {
+    const a = "<button>Save</button>";
+    const b = "<button>Cancel</button>";
+    expect(structuralHash(a)).not.toBe(structuralHash(b));
+  });
+});
