@@ -1,0 +1,66 @@
+{
+  "name": "ds-badge",
+  "version": "1.0.0",
+  "componentType": "atom",
+  "mutability": "adaptive",
+  "description": "Inline status chip. Text-only content, three semantic variants. Non-interactive by design.",
+
+  "usage": {
+    "contexts": ["consumer-web", "enterprise-saas"],
+    "designPatterns": ["status-indicator"]
+  },
+
+  "api": {
+    "properties": [
+      { "name": "variant", "type": "string", "required": false, "default": "info", "enum": ["info", "success", "error"], "description": "Semantic intent; drives foreground color only." }
+    ],
+    "slots": [
+      { "name": "default", "allowedElements": [], "description": "Badge text. Text only, matching ds-button's default-slot pattern for icon-adjacent labels." }
+    ]
+  },
+
+  "tokens": {
+    "consumes": [
+      "--sem-color-emphasis-bg",
+      "--sem-color-emphasis-fg",
+      "--sem-color-feedback-success",
+      "--sem-color-feedback-error",
+      "--sem-color-surface-bg",
+      "--sem-type-caption",
+      "--sem-space-inset-control",
+      "--sem-radius-interactive",
+      "--ctx-density-scale"
+    ]
+  },
+
+  "constraints": [
+    {
+      "id": "badge-token-wall",
+      "type": "token-usage",
+      "rule": { "allowedTiers": ["sem", "ctx"], "consumesOnly": true },
+      "failureBehavior": "reject",
+      "rationale": "No primitive references, no raw values."
+    },
+    {
+      "id": "badge-a11y",
+      "type": "accessibility",
+      "rule": { "standard": "wcag21aa", "rules": ["color-contrast", "focus-order-semantics"], "contexts": ["consumer-web", "enterprise-saas"] },
+      "failureBehavior": "reject",
+      "rationale": "Every variant's foreground/background pairing must independently clear AA in both contexts; a badge is never a focus stop."
+    },
+    {
+      "id": "badge-api-lock",
+      "type": "api-stability",
+      "rule": { "signatureHash": "<registry>" },
+      "failureBehavior": "reject",
+      "rationale": "Adaptive class: API drift is structural drift."
+    }
+  ],
+
+  "provenance": {
+    "author": "ai",
+    "model": "claude-fable-5",
+    "createdAt": "2026-07-11T00:00:00Z",
+    "justification": "Design decision: variant changes foreground color only (against a constant --sem-color-surface-bg or --sem-color-emphasis-bg backdrop) rather than swapping background color per variant. Rejected alternative: a colored background per variant (e.g. a solid green pill for 'success'), which is the more common badge pattern. Rejected for this POC because it would require three new background/foreground contrast pairs, none of which are declared in tokens.json's ds.contrastPair extensions -- adding them is a tokens.json edit, which is out of scope for an AI-authored definition (CLAUDE.md restricts spec edits to the human-approved ds-button change only). Reusing --sem-color-feedback-success / --sem-color-feedback-error / --sem-color-emphasis-fg, all of which already declare a contrastPair against a background this component consumes, keeps the badge inside the existing token wall with real, checked contrast rather than an unchecked new surface."
+  }
+}

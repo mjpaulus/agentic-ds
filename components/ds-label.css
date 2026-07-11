@@ -1,0 +1,13 @@
+/* GENERATED — do not hand-edit; regenerate through the pipeline. */
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sem-space-gap-related);
+  font: var(--sem-type-label);
+  color: var(--sem-color-text-primary);
+}
+
+:host([required]) [part="required-marker"]::before {
+  content: " *";
+  color: var(--sem-color-feedback-error);
+}

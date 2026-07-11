@@ -7,7 +7,7 @@ import { runPipeline } from "../../validator/pipeline.js";
 import { runStage3 } from "../../validator/stage3-constraints.js";
 import type { Candidate, ComponentDefinition } from "../../validator/types.js";
 import type { TokensFile } from "../../tokens/types.js";
-import { dsButtonCandidate, loadJson, registerCompositionStubs } from "../helpers.js";
+import { dsButtonCandidate, loadJson, registerAllExceptButton } from "../helpers.js";
 import { adversarialManifest } from "./manifest.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -58,7 +58,7 @@ describe("P2 adversarial suite: zero false negatives", () => {
 
     it(`${testCase.name}: rejects at stage ${expected.stage}`, async () => {
       const registry = new Registry();
-      await registerCompositionStubs(registry);
+      await registerAllExceptButton(registry);
 
       switch (testCase.setup) {
         case "register-ds-button": {

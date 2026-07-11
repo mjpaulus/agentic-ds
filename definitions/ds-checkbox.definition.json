@@ -1,0 +1,68 @@
+{
+  "name": "ds-checkbox",
+  "version": "1.0.0",
+  "componentType": "atom",
+  "mutability": "adaptive",
+  "description": "Binary toggle control. Reflects name/checked/disabled; reports state changes as ds-change.",
+
+  "usage": {
+    "contexts": ["consumer-web", "enterprise-saas"],
+    "designPatterns": ["form-control"]
+  },
+
+  "api": {
+    "properties": [
+      { "name": "name", "type": "string", "required": false },
+      { "name": "checked", "type": "boolean", "required": false, "default": false },
+      { "name": "disabled", "type": "boolean", "required": false, "default": false }
+    ],
+    "events": [
+      { "name": "ds-change", "detailSchema": { "type": "object", "properties": { "checked": { "type": "boolean" } } }, "description": "Fired when the checked state toggles, via pointer or keyboard (Space)." }
+    ]
+  },
+
+  "tokens": {
+    "consumes": [
+      "--sem-color-input-bg",
+      "--sem-color-input-border",
+      "--sem-color-action-bg",
+      "--sem-color-action-fg",
+      "--sem-color-focus-ring",
+      "--sem-color-text-disabled",
+      "--sem-radius-interactive",
+      "--sem-border-control",
+      "--ctx-density-scale"
+    ]
+  },
+
+  "constraints": [
+    {
+      "id": "checkbox-token-wall",
+      "type": "token-usage",
+      "rule": { "allowedTiers": ["sem", "ctx"], "consumesOnly": true },
+      "failureBehavior": "reject",
+      "rationale": "No primitive references, no raw values."
+    },
+    {
+      "id": "checkbox-a11y",
+      "type": "accessibility",
+      "rule": { "standard": "wcag21aa", "rules": ["color-contrast", "label", "focus-order-semantics"], "contexts": ["consumer-web", "enterprise-saas"] },
+      "failureBehavior": "reject",
+      "rationale": "The checkmark's foreground/background pairing (action-bg/action-fg, already a declared ds.contrastPair) must clear AA in both contexts; a standalone instance must carry an accessible name; never a positive tabindex."
+    },
+    {
+      "id": "checkbox-api-lock",
+      "type": "api-stability",
+      "rule": { "signatureHash": "<registry>" },
+      "failureBehavior": "reject",
+      "rationale": "Adaptive class: API drift is structural drift."
+    }
+  ],
+
+  "provenance": {
+    "author": "ai",
+    "model": "claude-fable-5",
+    "createdAt": "2026-07-11T00:00:00Z",
+    "justification": "Design decision: checked-state color reuses --sem-color-action-bg / --sem-color-action-fg (the same pair ds-button consumes) rather than introducing a dedicated checkbox accent token. Rejected alternative: a separate --sem-color-accent-* pair scoped to selection controls, which would read more intentionally in a mature system. Rejected for the POC because it is a tokens.json edit outside this AI-authored definition's authority, and because reusing the action pair keeps 'the thing that means affirmative/selected' visually consistent between a pressed button and a checked box without adding token surface or a new untested contrast pair. Keyboard activation (Space toggles, matching native <input type=checkbox> behavior) is wired the same way ds-button wires Enter/Space activation, rather than relying on this POC's headless environment to exercise native checkbox semantics, which happy-dom does not reliably simulate."
+  }
+}

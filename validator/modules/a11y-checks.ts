@@ -55,12 +55,23 @@ function checkFocusOrderSemantics(el: CheckableElement): A11yCheckResult {
 }
 
 function checkLabel(el: CheckableElement): A11yCheckResult {
-  // No form-field-shaped archetype exists yet in M3 (Text Input / Form
-  // Field land in M4); a generic label check has nothing structural to
-  // assert against a button archetype instance, so it passes vacuously.
-  // This is revisited when the Text Input / Form Field archetypes exist.
-  void el;
-  return { rule: "label", status: "pass" };
+  // M4: Text Input / Checkbox now exist, so this check has something real
+  // to assert. A standalone form-control instance (not necessarily wrapped
+  // by ds-form-field) must still carry an accessible name via aria-label or
+  // aria-labelledby -- the M3 placeholder ("nothing structural to assert
+  // against a button archetype instance") no longer applies.
+  const ariaLabel = el.getAttribute("aria-label");
+  const ariaLabelledby = el.getAttribute("aria-labelledby");
+  const hasLabel =
+    (typeof ariaLabel === "string" && ariaLabel.trim().length > 0) ||
+    (typeof ariaLabelledby === "string" && ariaLabelledby.trim().length > 0);
+  if (hasLabel) return { rule: "label", status: "pass" };
+  return {
+    rule: "label",
+    status: "violation",
+    severity: "serious",
+    message: `<${el.tagName.toLowerCase()}> has no accessible label: no aria-label or aria-labelledby.`,
+  };
 }
 
 const SUBSTITUTIONS: Record<string, (el: CheckableElement) => A11yCheckResult> = {

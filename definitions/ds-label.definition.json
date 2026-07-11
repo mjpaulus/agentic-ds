@@ -1,0 +1,63 @@
+{
+  "name": "ds-label",
+  "version": "1.0.0",
+  "componentType": "atom",
+  "mutability": "adaptive",
+  "description": "Text label for a form control. Associates via the standard `for` attribute and can render a required marker; carries no interaction of its own.",
+
+  "usage": {
+    "contexts": ["consumer-web", "enterprise-saas"],
+    "designPatterns": ["form-label"]
+  },
+
+  "api": {
+    "properties": [
+      { "name": "for", "type": "string", "required": false, "description": "Id of the control this label describes." },
+      { "name": "required", "type": "boolean", "required": false, "default": false, "description": "Renders a required marker after the label text." }
+    ],
+    "slots": [
+      { "name": "default", "allowedElements": [], "description": "Label text. Text only." }
+    ]
+  },
+
+  "tokens": {
+    "consumes": [
+      "--sem-color-text-primary",
+      "--sem-color-surface-bg",
+      "--sem-color-feedback-error",
+      "--sem-type-label",
+      "--sem-space-gap-related"
+    ]
+  },
+
+  "constraints": [
+    {
+      "id": "label-token-wall",
+      "type": "token-usage",
+      "rule": { "allowedTiers": ["sem", "ctx"], "consumesOnly": true },
+      "failureBehavior": "reject",
+      "rationale": "No primitive references, no raw values."
+    },
+    {
+      "id": "label-a11y",
+      "type": "accessibility",
+      "rule": { "standard": "wcag21aa", "rules": ["color-contrast", "focus-order-semantics"], "contexts": ["consumer-web", "enterprise-saas"] },
+      "failureBehavior": "reject",
+      "rationale": "Label text must clear AA contrast against the surface in both context token resolutions; a label is never a focus stop, so no positive tabindex is ever legitimate."
+    },
+    {
+      "id": "label-api-lock",
+      "type": "api-stability",
+      "rule": { "signatureHash": "<registry>" },
+      "failureBehavior": "reject",
+      "rationale": "Adaptive class: API drift is structural drift."
+    }
+  ],
+
+  "provenance": {
+    "author": "ai",
+    "model": "claude-fable-5",
+    "createdAt": "2026-07-11T00:00:00Z",
+    "justification": "Design decision: ds-label is a pure text/association primitive with a boolean `required` marker rather than a full validation-state API (e.g. mirroring ds-text-input's `invalid`). Rejected alternative: giving the label its own `invalid`/error-color state so it could visually echo its associated control's validity. Rejected because that would duplicate state that ds-form-field already owns and broadcasts through its own `error` prop and part; a label independently tracking validity risks the two falling out of sync (the label says 'invalid' while the field says 'valid') with no single source of truth. Keeping ds-label a dumb, association-only atom keeps that state in exactly one place. The `required` marker is driven by --sem-color-feedback-error (already a declared ds.contrastPair partner of --sem-color-surface-bg in tokens.json) rather than a new color, so contrast is machine-checked with zero new token surface."
+  }
+}

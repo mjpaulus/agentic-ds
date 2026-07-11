@@ -1,0 +1,72 @@
+{
+  "name": "ds-search-bar",
+  "version": "1.0.0",
+  "componentType": "molecule",
+  "mutability": "adaptive",
+  "description": "Composite search control: an internal text field and a trigger button, rendered as the component's own shadow parts. Fires ds-search on button press or Enter.",
+
+  "usage": {
+    "contexts": ["consumer-web", "enterprise-saas"],
+    "designPatterns": ["form-composite"]
+  },
+
+  "api": {
+    "properties": [
+      { "name": "placeholder", "type": "string", "required": false, "default": "Search" }
+    ],
+    "events": [
+      { "name": "ds-search", "detailSchema": { "type": "object", "properties": { "query": { "type": "string" } } }, "description": "Fired on Enter in the input or on trigger-button press." }
+    ]
+  },
+
+  "tokens": {
+    "consumes": [
+      "--sem-color-input-bg",
+      "--sem-color-input-border",
+      "--sem-color-input-border-focus",
+      "--sem-color-focus-ring",
+      "--sem-color-action-bg",
+      "--sem-color-action-fg",
+      "--sem-color-action-bg-hover",
+      "--sem-radius-interactive",
+      "--sem-space-inset-control",
+      "--sem-space-gap-related",
+      "--sem-type-body",
+      "--sem-type-control",
+      "--sem-border-control",
+      "--ctx-density-scale",
+      "--ctx-motion-duration"
+    ]
+  },
+
+  "constraints": [
+    {
+      "id": "search-token-wall",
+      "type": "token-usage",
+      "rule": { "allowedTiers": ["sem", "ctx"], "consumesOnly": true },
+      "failureBehavior": "reject",
+      "rationale": "No primitive references, no raw values."
+    },
+    {
+      "id": "search-a11y",
+      "type": "accessibility",
+      "rule": { "standard": "wcag21aa", "rules": ["color-contrast", "button-name", "focus-order-semantics"], "contexts": ["consumer-web", "enterprise-saas"] },
+      "failureBehavior": "reject",
+      "rationale": "The trigger's action-bg/action-fg pairing must clear AA in both contexts (already a declared ds.contrastPair); the host always carries an accessible name via aria-label mirroring `placeholder`; never a positive tabindex."
+    },
+    {
+      "id": "search-api-lock",
+      "type": "api-stability",
+      "rule": { "signatureHash": "<registry>" },
+      "failureBehavior": "reject",
+      "rationale": "Adaptive class: API drift is structural drift."
+    }
+  ],
+
+  "provenance": {
+    "author": "ai",
+    "model": "claude-fable-5",
+    "createdAt": "2026-07-11T00:00:00Z",
+    "justification": "Design decision: the internal input and trigger are rendered as this component's OWN shadow parts (plain <input>/<button> exposed via ::part()) rather than as nested real <ds-text-input> and <ds-button> custom-element instances, even though composition.allowedChildren documents ds-text-input and ds-button as the conceptually equivalent building blocks. Rejected alternative: literally instantiating <ds-text-input> and <ds-button> inside the shadow root. Rejected for two reasons: first, ds-button.composition.allowedParents (locked, human-authored, not editable by this AI-authored definition) names ds-form-field and ds-search-bar, and ds-search-bar.composition.allowedChildren was required to name ds-button back -- a literal nested-instance implementation would additionally need a real, registered ds-button INSIDE ds-search-bar's own registration-time render check, but ds-button itself cannot register until ds-search-bar already exists (its allowedParents check is closed-world too), which is an unbreakable circular registration dependency given both lists are fixed by requirement. Rendering plain shadow parts instead of nested custom elements breaks that cycle: ds-search-bar declares no 'composition' constraint and no 'composition' data block at all: it has no slots, so nothing can ever be slotted into it, and per the project's core rule an unenforced allowedChildren list is a wish, not a rule -- deleted rather than kept as documentation. The registry can then resolve ds-button's allowedParents for real once both molecules exist. Second-order decision: Enter fires ds-search from the input (not only button click), matching how people actually use search boxes."
+  }
+}

@@ -39,6 +39,9 @@
   color: var(--sem-color-danger-fg);
 }
 
+:host([variant="secondary"]) { background: var(--sem-color-emphasis-bg); color: var(--sem-color-emphasis-fg); }
+:host([variant="secondary"]:hover:not([disabled]):not([loading])) { background: var(--sem-color-emphasis-fg); color: var(--sem-color-emphasis-bg); }
+
 slot {
   display: inline-flex;
   align-items: center;

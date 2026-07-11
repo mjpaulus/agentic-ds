@@ -1,0 +1,33 @@
+/* GENERATED — do not hand-edit; regenerate through the pipeline. */
+:host {
+  display: inline-flex;
+  align-items: center;
+  transform: scale(var(--ctx-density-scale));
+}
+
+[part="input"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 1.1em;
+  height: 1.1em;
+  margin: 0;
+  cursor: pointer;
+  background: var(--sem-color-input-bg);
+  border: var(--sem-border-control) solid var(--sem-color-input-border);
+  border-radius: calc(var(--sem-radius-interactive) / 2);
+}
+
+[part="input"]:checked {
+  background: var(--sem-color-action-bg);
+  border-color: var(--sem-color-action-bg);
+}
+
+[part="input"]:focus-visible {
+  outline: 2px solid var(--sem-color-focus-ring);
+  outline-offset: 2px;
+}
+
+[part="input"]:disabled {
+  cursor: not-allowed;
+  border-color: var(--sem-color-text-disabled);
+}

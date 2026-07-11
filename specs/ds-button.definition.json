@@ -1,6 +1,6 @@
 {
   "name": "ds-button",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "componentType": "atom",
   "mutability": "adaptive",
   "description": "Primary action trigger. Structure and API are locked; visual presentation adapts per context through context-tier token bindings only.",
@@ -33,6 +33,8 @@
       "--sem-color-action-bg-hover",
       "--sem-color-danger-bg",
       "--sem-color-danger-fg",
+      "--sem-color-emphasis-bg",
+      "--sem-color-emphasis-fg",
       "--sem-color-focus-ring",
       "--sem-radius-interactive",
       "--sem-space-inset-control",

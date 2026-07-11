@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { Registry } from "../registry/registry.js";
-import { dsButtonCandidate, loadJson, registerCompositionStubs } from "../test/helpers.js";
+import { dsButtonCandidate, loadJson, registerAllExceptButton } from "../test/helpers.js";
 import { runPipeline } from "./pipeline.js";
 import type { Candidate } from "./types.js";
 
 describe("P2 positive path: ds-button", () => {
   it("registers cleanly through the full pipeline with zero warnings", async () => {
     const registry = new Registry();
-    await registerCompositionStubs(registry);
+    await registerAllExceptButton(registry);
 
     const candidate = dsButtonCandidate();
     const record = await runPipeline(candidate, registry);
@@ -30,7 +30,7 @@ describe("P2 positive path: ds-button", () => {
 
   it("rejects the same ds-button definition if the css leaks a primitive token", async () => {
     const registry = new Registry();
-    await registerCompositionStubs(registry);
+    await registerAllExceptButton(registry);
 
     const definition = loadJson("../specs/ds-button.definition.json");
     const candidate: Candidate = {

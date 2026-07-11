@@ -11,7 +11,7 @@ The system generates, adapts, and evolves Web Components under machine-enforceab
 | M1 | Token pipeline (parse → validate → per-context CSS) | ✅ P1 criteria green |
 | M2 | Validator stages 1–3 + adversarial suite | ✅ static portion of P2 green |
 | M3 | Generator + rendered verification (Stage 4) | ✅ P2 fully green, P4 partial (button) |
-| M4 | Component set (7 components, both contexts) | not started |
+| M4 | Component set (7 components, both contexts) | ✅ P4 green |
 | M5 | Generation flow + evolution gate | not started |
 
 ## Quick start
@@ -52,6 +52,9 @@ See [specs/success-criteria.md](specs/success-criteria.md) for the falsifiable c
                    (token-usage, api-stability, mutability, composition), rendered verification
                    (contrast from token data, a11y probes, slot probes, perf budgets).
 /generator         Deterministic definition → Web Component source. Archetype-based; no LLM.
+/definitions       AI-authored component definitions (label, badge, text-input, checkbox,
+                   form-field, search-bar), each carrying a provenance justification with
+                   at least one rejected alternative. ds-button's stays in /specs.
 /components        Generated output. Never hand-edit; regenerate via npm run build:components.
 /registry          Component registry: validation records, structural + API hashes,
                    one-incumbent-per-context invariant enforced on every write.

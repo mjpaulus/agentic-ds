@@ -1,0 +1,43 @@
+/* GENERATED — do not hand-edit; regenerate through the pipeline. */
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sem-space-gap-related);
+  transform: scale(var(--ctx-density-scale));
+}
+
+[part="input"] {
+  box-sizing: border-box;
+  background: var(--sem-color-input-bg);
+  font: var(--sem-type-body);
+  padding: var(--sem-space-inset-control);
+  border-radius: var(--sem-radius-interactive);
+  border: var(--sem-border-control) solid var(--sem-color-input-border);
+}
+
+[part="input"]:focus-visible {
+  border-color: var(--sem-color-input-border-focus);
+  outline: 2px solid var(--sem-color-focus-ring);
+  outline-offset: 1px;
+}
+
+[part="button"] {
+  border: none;
+  cursor: pointer;
+  background: var(--sem-color-action-bg);
+  color: var(--sem-color-action-fg);
+  font: var(--sem-type-control);
+  padding: var(--sem-space-inset-control);
+  border-radius: var(--sem-radius-interactive);
+  transition-duration: var(--ctx-motion-duration);
+  transition-property: background-color;
+}
+
+[part="button"]:hover {
+  background: var(--sem-color-action-bg-hover);
+}
+
+[part="button"]:focus-visible {
+  outline: 2px solid var(--sem-color-focus-ring);
+  outline-offset: 2px;
+}

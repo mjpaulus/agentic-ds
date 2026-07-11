@@ -1,0 +1,31 @@
+/* GENERATED — do not hand-edit; regenerate through the pipeline. */
+:host {
+  display: inline-block;
+  transform: scale(var(--ctx-density-scale));
+}
+
+[part="input"] {
+  box-sizing: border-box;
+  width: 100%;
+  background: var(--sem-color-input-bg);
+  color: var(--sem-color-text-primary);
+  font: var(--sem-type-body);
+  padding: var(--sem-space-inset-control);
+  border-radius: var(--sem-radius-interactive);
+  border: var(--sem-border-control) solid var(--sem-color-input-border);
+}
+
+[part="input"]:focus-visible {
+  border-color: var(--sem-color-input-border-focus);
+  outline: 2px solid var(--sem-color-focus-ring);
+  outline-offset: 1px;
+}
+
+:host([invalid]) [part="input"] {
+  border-color: var(--sem-color-feedback-error);
+}
+
+[part="input"]:disabled {
+  color: var(--sem-color-text-disabled);
+  cursor: not-allowed;
+}

@@ -1,0 +1,22 @@
+/* GENERATED — do not hand-edit; regenerate through the pipeline. */
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: calc(var(--sem-space-inset-control) / 2) var(--sem-space-inset-control);
+  border-radius: var(--sem-radius-interactive);
+  font: var(--sem-type-caption);
+  background: var(--sem-color-emphasis-bg);
+  color: var(--sem-color-emphasis-fg);
+  transform: scale(var(--ctx-density-scale));
+}
+
+:host([variant="success"]) {
+  background: var(--sem-color-surface-bg);
+  color: var(--sem-color-feedback-success);
+}
+
+:host([variant="error"]) {
+  background: var(--sem-color-surface-bg);
+  color: var(--sem-color-feedback-error);
+}

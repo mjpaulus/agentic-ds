@@ -117,6 +117,17 @@ function buildCss(definition: ComponentDefinition): string {
     lines.push("}");
   }
 
+  // Design call (M4, human-approved 2026-07-11): secondary previously had no
+  // distinct color binding and rendered identical to primary. It now uses
+  // the emphasis pair (a lower-weight surface, contrasted per context by
+  // tokens.json's declared ds.contrastPair) with a hover treatment built
+  // from the same two tokens (swapped) rather than inventing a new token.
+  if (consumes.has("--sem-color-emphasis-bg") && consumes.has("--sem-color-emphasis-fg")) {
+    lines.push("");
+    lines.push(':host([variant="secondary"]) { background: var(--sem-color-emphasis-bg); color: var(--sem-color-emphasis-fg); }');
+    lines.push(':host([variant="secondary"]:hover:not([disabled]):not([loading])) { background: var(--sem-color-emphasis-fg); color: var(--sem-color-emphasis-bg); }');
+  }
+
   lines.push("");
   lines.push("slot {");
   lines.push("  display: inline-flex;");
@@ -155,8 +166,7 @@ function buildSource(definition: ComponentDefinition, template: string, css: str
   const observedAttrs = properties.map((p) => JSON.stringify(toKebab(p.name)));
 
   return `${HEADER}
-// Source definition: ${definition.name}@${definition.version} (mutability: ${definition.mutability})
-// Archetype: button. Regenerate via \`npm run build:components\`.
+// ${definition.name}@${definition.version} (${definition.mutability}, archetype: button)
 
 const TEMPLATE = ${JSON.stringify(template)};
 const STYLE = ${JSON.stringify(css)};

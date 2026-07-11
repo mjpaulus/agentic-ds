@@ -1,0 +1,18 @@
+/* GENERATED — do not hand-edit; regenerate through the pipeline. */
+:host { display: block; }
+
+[part="container"] {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--sem-space-gap-stack) / 2);
+}
+
+[part="error"] {
+  display: none;
+  color: var(--sem-color-feedback-error);
+  font: var(--sem-type-caption);
+}
+
+[part="error"][data-visible] {
+  display: block;
+}

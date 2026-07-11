@@ -73,12 +73,39 @@ function resolveTokenCss(context: string): string {
   return emitted.perContext[context] ?? "";
 }
 
+/**
+ * happy-dom does not implement CSS custom-property INHERITANCE in
+ * getComputedStyle: verified directly against happy-dom's Window API, a
+ * `--foo` declared on `:root` resolves via `getComputedStyle(documentElement)`
+ * but NOT via `getComputedStyle()` on any descendant element -- not even a
+ * direct child -- even with no attribute selector involved at all (a bare
+ * `:root { --foo: bar }` reproduces it). Selectors that DIRECTLY target an
+ * element (`*`, a tag name, etc.) DO resolve correctly; only the inheritance
+ * step is missing. Real browsers implement inheritance correctly, so
+ * archetype code is written against the real (correct) model -- ds-form-field
+ * reads `--ctx-validation-mode` live via `getComputedStyle(this)` per
+ * CLAUDE.md's M4 P4c requirement. Without this shim, that read would return
+ * an empty string for every component instance in every Stage 4 context,
+ * silently breaking the behavioral-token mechanism in this environment only.
+ * The shim duplicates every custom property from the single per-context
+ * `:root[data-context=...]` block onto a universal-selector rule, which
+ * happy-dom resolves directly for any element, matching real-browser
+ * inheritance behavior for the purposes of this headless environment.
+ */
+function customPropertyInheritanceShim(tokenCss: string): string {
+  const declarations = Array.from(tokenCss.matchAll(/(--[a-zA-Z0-9-]+)\s*:\s*([^;]+);/g))
+    .map((m) => `${m[1]}: ${m[2]};`)
+    .join(" ");
+  return declarations ? `* { ${declarations} }` : "";
+}
+
 function buildEnvironment(context: string): RenderEnv {
   const window = new Window();
   const document = window.document as unknown as Document;
   document.documentElement.setAttribute("data-context", context);
   const styleEl = document.createElement("style");
-  styleEl.textContent = resolveTokenCss(context);
+  const tokenCss = resolveTokenCss(context);
+  styleEl.textContent = `${tokenCss}\n${customPropertyInheritanceShim(tokenCss)}`;
   document.head.appendChild(styleEl);
   return { window, document, consoleErrors: [] };
 }

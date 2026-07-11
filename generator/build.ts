@@ -31,7 +31,19 @@ export function buildOne(target: BuildTarget): { name: string; bytes: number } {
   return { name: target.outputName, bytes: generated.source.length };
 }
 
+// Registry-based generation order: atoms before molecules (composition
+// closure requires children/parents already registered), ds-button last so
+// its locked allowedParents ["ds-form-field", "ds-search-bar"] resolve
+// against real registrations (CLAUDE.md M4). This build script only emits
+// files; registration order is enforced separately wherever these
+// definitions are run through the pipeline (see test/helpers.ts).
 const TARGETS: BuildTarget[] = [
+  { definitionPath: resolve(__dirname, "../definitions/ds-label.definition.json"), outputName: "ds-label" },
+  { definitionPath: resolve(__dirname, "../definitions/ds-badge.definition.json"), outputName: "ds-badge" },
+  { definitionPath: resolve(__dirname, "../definitions/ds-text-input.definition.json"), outputName: "ds-text-input" },
+  { definitionPath: resolve(__dirname, "../definitions/ds-checkbox.definition.json"), outputName: "ds-checkbox" },
+  { definitionPath: resolve(__dirname, "../definitions/ds-form-field.definition.json"), outputName: "ds-form-field" },
+  { definitionPath: resolve(__dirname, "../definitions/ds-search-bar.definition.json"), outputName: "ds-search-bar" },
   { definitionPath: resolve(__dirname, "../specs/ds-button.definition.json"), outputName: "ds-button" },
 ];
 

@@ -81,6 +81,63 @@
     ds-press events fired: <span id="press-count">0</span>
   </p>
 
+  <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--sem-color-input-border);" />
+
+  <h2>Atoms (M4)</h2>
+  <p style="font: var(--sem-type-caption); color: var(--sem-color-text-secondary);">
+    ds-label, ds-badge, ds-text-input, ds-checkbox — same rule: every visual
+    and behavioral difference between contexts flows through tokens, zero
+    component code branches on <code>data-context</code>.
+  </p>
+
+  <div style="display: flex; gap: var(--sem-space-gap-related); flex-wrap: wrap; align-items: center; margin-top: 1rem;">
+    <ds-label for="demo-input" required>Email address</ds-label>
+    <ds-text-input id="demo-input" name="email" type="email" placeholder="you@example.com"></ds-text-input>
+    <ds-checkbox id="demo-checkbox" name="subscribe"></ds-checkbox>
+    <ds-label for="demo-checkbox">Subscribe</ds-label>
+    <ds-badge variant="info">Info</ds-badge>
+    <ds-badge variant="success">Success</ds-badge>
+    <ds-badge variant="error">Error</ds-badge>
+  </div>
+
+  <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--sem-color-input-border);" />
+
+  <h2>ds-search-bar (M4)</h2>
+  <ds-search-bar id="demo-search" placeholder="Search components..."></ds-search-bar>
+  <p style="margin-top: 0.5rem; font: var(--sem-type-caption); color: var(--sem-color-text-secondary);">
+    Last query: <span id="search-query">(none)</span>
+  </p>
+
+  <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--sem-color-input-border);" />
+
+  <h2>ds-form-field: the P4c behavioral-token showcase (M4)</h2>
+  <p style="font: var(--sem-type-caption); color: var(--sem-color-text-secondary);">
+    This field's component code never branches on context. It reads
+    <code>--ctx-validation-mode</code> live at validation time. In
+    enterprise-saas that token resolves to "eager" (blur validates
+    immediately); in consumer-web it resolves to "lazy" (only the Submit
+    button's <code>validate()</code> call, or the field's own Enter key,
+    validates). Flip the context above, then try blurring out of an empty
+    field vs. pressing Submit.
+  </p>
+
+  <ds-form-field id="demo-field" name="username" label="Username" error="Username is required.">
+    <ds-label slot="label" for="demo-field-input" required>Username</ds-label>
+    <ds-text-input slot="input" id="demo-field-input" name="username" placeholder="Required"></ds-text-input>
+  </ds-form-field>
+  <div style="margin-top: 0.75rem;">
+    <ds-button id="demo-submit" variant="primary" size="small">Submit</ds-button>
+  </div>
+  <p style="margin-top: 0.5rem; font: var(--sem-type-caption); color: var(--sem-color-text-secondary);">
+    Last ds-validate: <span id="validate-log">(none)</span>
+  </p>
+
+  <script type="module" src="../components/ds-label.js"></script>
+  <script type="module" src="../components/ds-badge.js"></script>
+  <script type="module" src="../components/ds-text-input.js"></script>
+  <script type="module" src="../components/ds-checkbox.js"></script>
+  <script type="module" src="../components/ds-form-field.js"></script>
+  <script type="module" src="../components/ds-search-bar.js"></script>
   <script type="module" src="../components/ds-button.js"></script>
 
   <script>
@@ -114,6 +171,25 @@
         pressCountEl.textContent = String(pressCount);
       });
     }
+
+    // ds-search-bar: fires ds-search with {query} on Enter or button press.
+    document.getElementById("demo-search").addEventListener("ds-search", (e) => {
+      document.getElementById("search-query").textContent = e.detail.query || "(empty)";
+    });
+
+    // ds-form-field: the P4c showcase. The Submit button only ever calls
+    // validate() -- it never reads or branches on data-context. Whether
+    // that call is "redundant" (already validated on blur, eager mode) or
+    // "the only validation that ever runs" (lazy mode) is decided entirely
+    // by the field's own live ctx-token read, not by this script.
+    const demoField = document.getElementById("demo-field");
+    const validateLog = document.getElementById("validate-log");
+    demoField.addEventListener("ds-validate", (e) => {
+      validateLog.textContent = "valid=" + e.detail.valid + " mode=" + e.detail.mode;
+    });
+    document.getElementById("demo-submit").addEventListener("ds-press", () => {
+      demoField.validate();
+    });
   </script>
 </body>
 </html>
