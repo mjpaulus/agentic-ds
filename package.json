@@ -6,11 +6,13 @@
   "scripts": {
     "build:tokens": "tsx tokens/build.ts",
     "test": "vitest run",
-    "test:p1": "vitest run tokens"
+    "test:p1": "vitest run tokens",
+    "test:p2": "vitest run validator registry test"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",
     "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
     "happy-dom": "^15.11.7",
     "tsx": "^4.19.2",
     "typescript": "^5.7.3",

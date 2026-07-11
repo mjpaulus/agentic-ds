@@ -1,0 +1,28 @@
+{
+  "name": "ds-slot-violation",
+  "version": "1.0.0",
+  "componentType": "atom",
+  "mutability": "adaptive",
+  "description": "Stage 4 / M3 fixture: the 'icon' slot disallows all elements ([] means text only), but a rendered probe would insert a disallowed element to verify the component's connectedCallback fires a console error. Rendered slot probing requires a live headless tree (constraint-enforcement-spec.md Section 3, 'composition', rendered check) and is out of scope for M2.",
+  "api": {
+    "properties": [
+      { "name": "size", "type": "string", "required": false, "default": "medium", "enum": ["small", "medium", "large"] }
+    ],
+    "slots": [
+      { "name": "icon", "allowedElements": [], "description": "Text/SVG reference only; no arbitrary elements." }
+    ]
+  },
+  "tokens": {
+    "consumes": ["--sem-color-test-bg", "--sem-color-test-fg"]
+  },
+  "constraints": [
+    {
+      "id": "slot-composition",
+      "type": "composition",
+      "rule": { "enforceSlotContent": true },
+      "failureBehavior": "reject",
+      "rationale": "Slot allowlists are load-bearing."
+    }
+  ],
+  "provenance": { "author": "human", "createdAt": "2026-07-11T00:00:00Z" }
+}

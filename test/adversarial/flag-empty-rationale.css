@@ -1,0 +1,5 @@
+:host {
+  background: var(--sem-color-test-bg);
+  color: var(--sem-color-test-fg);
+  border-radius: 4px;
+}

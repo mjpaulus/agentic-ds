@@ -1,0 +1,25 @@
+{
+  "name": "ds-primitive-violation",
+  "version": "1.0.0",
+  "componentType": "atom",
+  "mutability": "adaptive",
+  "description": "Adversarial fixture: otherwise-valid definition whose CSS artifact references a primitive-tier token. Must reject unconditionally regardless of failureBehavior (non-negotiable #1).",
+  "api": {
+    "properties": [
+      { "name": "size", "type": "string", "required": false, "default": "medium", "enum": ["small", "medium", "large"] }
+    ]
+  },
+  "tokens": {
+    "consumes": ["--sem-color-test-bg", "--sem-color-test-fg", "--ctx-density-scale"]
+  },
+  "constraints": [
+    {
+      "id": "token-wall",
+      "type": "token-usage",
+      "rule": { "allowedTiers": ["sem", "ctx"], "consumesOnly": true },
+      "failureBehavior": "reject",
+      "rationale": "The token wall is the contract."
+    }
+  ],
+  "provenance": { "author": "human", "createdAt": "2026-07-11T00:00:00Z" }
+}

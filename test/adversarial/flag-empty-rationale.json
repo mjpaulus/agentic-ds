@@ -1,0 +1,25 @@
+{
+  "name": "ds-flag-no-rationale",
+  "version": "1.0.0",
+  "componentType": "atom",
+  "mutability": "adaptive",
+  "description": "Adversarial fixture (extra, beyond the 8): a constraint with failureBehavior 'flag' but an empty rationale string. Per constraint-enforcement-spec.md Section 4, an empty rationale on a flag constraint is treated as reject.",
+  "api": {
+    "properties": [
+      { "name": "size", "type": "string", "required": false, "default": "medium", "enum": ["small", "medium", "large"] }
+    ]
+  },
+  "tokens": {
+    "consumes": ["--sem-color-test-bg", "--sem-color-test-fg", "--sem-radius-test"]
+  },
+  "constraints": [
+    {
+      "id": "flag-no-rationale",
+      "type": "token-usage",
+      "rule": { "allowedTiers": ["sem", "ctx"], "consumesOnly": true },
+      "failureBehavior": "flag",
+      "rationale": ""
+    }
+  ],
+  "provenance": { "author": "human", "createdAt": "2026-07-11T00:00:00Z" }
+}

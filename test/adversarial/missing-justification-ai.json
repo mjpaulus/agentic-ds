@@ -1,0 +1,25 @@
+{
+  "name": "ds-unexplained-thing",
+  "version": "1.0.0",
+  "componentType": "atom",
+  "mutability": "adaptive",
+  "description": "Adversarial fixture: provenance.author is 'ai' with no justification field at all. Schema if/then requires justification whenever author is ai.",
+  "api": {
+    "properties": [
+      { "name": "size", "type": "string", "required": false, "default": "medium", "enum": ["small", "medium", "large"] }
+    ]
+  },
+  "tokens": {
+    "consumes": ["--sem-color-test-bg", "--sem-color-test-fg"]
+  },
+  "constraints": [
+    {
+      "id": "unexplained-token-wall",
+      "type": "token-usage",
+      "rule": { "allowedTiers": ["sem", "ctx"], "consumesOnly": true },
+      "failureBehavior": "reject",
+      "rationale": "The token wall is the contract."
+    }
+  ],
+  "provenance": { "author": "ai", "model": "claude", "createdAt": "2026-07-11T00:00:00Z" }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "ds-vibes-based",
+  "version": "1.0.0",
+  "componentType": "atom",
+  "mutability": "adaptive",
+  "description": "Adversarial fixture: constraints[0].type is 'vibes', which is outside the schema enum. Caught at Stage 2 (ajv enum) for well-formed JSON; the Stage 3 dispatcher's defensive check is exercised directly in a separate unit test that bypasses Stage 2.",
+  "api": {
+    "properties": [
+      { "name": "size", "type": "string", "required": false, "default": "medium", "enum": ["small", "medium", "large"] }
+    ]
+  },
+  "tokens": {
+    "consumes": ["--sem-color-test-bg", "--sem-color-test-fg"]
+  },
+  "constraints": [
+    {
+      "id": "vibes-check",
+      "type": "vibes",
+      "rule": {},
+      "failureBehavior": "reject",
+      "rationale": "it just feels right"
+    }
+  ],
+  "provenance": { "author": "human", "createdAt": "2026-07-11T00:00:00Z" }
+}

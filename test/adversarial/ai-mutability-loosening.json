@@ -1,0 +1,33 @@
+{
+  "name": "ds-loosen-test",
+  "version": "1.0.0",
+  "componentType": "atom",
+  "mutability": "generative",
+  "description": "Adversarial fixture (extra, beyond the 8): AI-authored mutate candidate that loosens mutability from adaptive to generative. Template and api are held byte-identical to the base registration so Stage 1's hash check passes and the loosening is caught by the mutability module in Stage 3, not masked by structural/API drift.",
+  "api": {
+    "properties": [
+      { "name": "size", "type": "string", "required": false, "default": "medium", "enum": ["small", "medium", "large"] }
+    ]
+  },
+  "tokens": {
+    "consumes": ["--sem-color-test-bg", "--sem-color-test-fg"]
+  },
+  "constraints": [
+    {
+      "id": "loosen-mutability-class",
+      "type": "mutability",
+      "rule": { "class": "generative" },
+      "failureBehavior": "reject",
+      "rationale": "mutability class must match declared value"
+    }
+  ],
+  "evolution": {
+    "gate": {
+      "metric": "task-completion-rate",
+      "threshold": 0.05,
+      "minSamples": 100,
+      "windowDays": 14
+    }
+  },
+  "provenance": { "author": "ai", "model": "claude", "createdAt": "2026-07-11T00:00:00Z", "justification": "Proposing a looser mutability class to enable faster iteration; rejected alternative was keeping it adaptive and filing a human request instead." }
+}

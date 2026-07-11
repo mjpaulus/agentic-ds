@@ -1,0 +1,28 @@
+{
+  "name": "ds-contrast-violation",
+  "version": "1.0.0",
+  "componentType": "atom",
+  "mutability": "adaptive",
+  "description": "Stage 4 / M3 fixture: css/tokens are structurally valid, but under one context's token resolution the foreground/background pair would fail WCAG 2.1 AA contrast. Rendered contrast checking is out of scope for M2 (requires a live tree per constraint-enforcement-spec.md Section 1 Stage 4); this fixture exists so the Stage 4 accessibility module has a known case to exercise in M3.",
+  "usage": {
+    "contexts": ["consumer-web", "enterprise-saas"]
+  },
+  "api": {
+    "properties": [
+      { "name": "size", "type": "string", "required": false, "default": "medium", "enum": ["small", "medium", "large"] }
+    ]
+  },
+  "tokens": {
+    "consumes": ["--sem-color-test-bg", "--sem-color-test-fg", "--ctx-density-scale"]
+  },
+  "constraints": [
+    {
+      "id": "contrast-a11y",
+      "type": "accessibility",
+      "rule": { "standard": "wcag21aa", "rules": ["color-contrast"], "contexts": ["consumer-web", "enterprise-saas"] },
+      "failureBehavior": "reject",
+      "rationale": "Contrast must pass under both context token resolutions independently."
+    }
+  ],
+  "provenance": { "author": "human", "createdAt": "2026-07-11T00:00:00Z" }
+}

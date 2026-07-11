@@ -9,7 +9,7 @@ The system generates, adapts, and evolves Web Components under machine-enforceab
 | Milestone | Scope | Status |
 |---|---|---|
 | M1 | Token pipeline (parse → validate → per-context CSS) | ✅ P1 criteria green |
-| M2 | Validator stages 1–3 + adversarial suite | not started |
+| M2 | Validator stages 1–3 + adversarial suite | ✅ static portion of P2 green |
 | M3 | Generator + rendered verification (Stage 4) | not started |
 | M4 | Component set (7 components, both contexts) | not started |
 | M5 | Generation flow + evolution gate | not started |
@@ -46,12 +46,18 @@ See [specs/success-criteria.md](specs/success-criteria.md) for the falsifiable c
 ## Repo structure
 
 ```
-/specs      The five contract files. Read these first; they are contracts, not references.
-/tokens     Token build: parser, rules-block validator, CSS emitter, P1 tests.
-/demo       Demo page with the data-context switcher.
+/specs             The five contract files. Read these first; they are contracts, not references.
+/tokens            Token build: parser, rules-block validator, CSS emitter, P1 tests.
+/validator         Pipeline stages 1–3: gatekeeping, ajv schema validation, constraint modules
+                   (token-usage, api-stability, mutability, composition). Stage 4 lands in M3.
+/registry          Component registry: validation records, structural + API hashes,
+                   one-incumbent-per-context invariant enforced on every write.
+/test/adversarial  11 deliberately broken definitions, each violating exactly one constraint.
+                   The pipeline's proof: every one dies with a record naming the violation.
+/demo              Demo page with the data-context switcher.
 ```
 
-Later milestones add `/validator`, `/generator`, `/registry`, `/telemetry`, `/components`, and `/test/adversarial` — in that order. The sequencing rule: the validator exists before the generator. The system that says no is built before the system that creates.
+Later milestones add `/generator`, `/telemetry`, and `/components` — in that order. The sequencing rule: the validator exists before the generator. The system that says no is built before the system that creates.
 
 ## Specs (read in this order)
 

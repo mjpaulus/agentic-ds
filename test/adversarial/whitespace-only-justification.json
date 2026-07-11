@@ -1,0 +1,25 @@
+{
+  "name": "ds-whitespace-justified",
+  "version": "1.0.0",
+  "componentType": "atom",
+  "mutability": "adaptive",
+  "description": "Adversarial fixture (extra, beyond the 8): provenance.author is 'ai' and justification is present but whitespace-only. The schema's if/then only enforces presence of the field; the pipeline additionally treats whitespace-only as reject (non-negotiable #5).",
+  "api": {
+    "properties": [
+      { "name": "size", "type": "string", "required": false, "default": "medium", "enum": ["small", "medium", "large"] }
+    ]
+  },
+  "tokens": {
+    "consumes": ["--sem-color-test-bg", "--sem-color-test-fg"]
+  },
+  "constraints": [
+    {
+      "id": "whitespace-token-wall",
+      "type": "token-usage",
+      "rule": { "allowedTiers": ["sem", "ctx"], "consumesOnly": true },
+      "failureBehavior": "reject",
+      "rationale": "The token wall is the contract."
+    }
+  ],
+  "provenance": { "author": "ai", "model": "claude", "createdAt": "2026-07-11T00:00:00Z", "justification": "   " }
+}

@@ -1,0 +1,25 @@
+{
+  "name": "ds-locked-thing",
+  "version": "1.0.0",
+  "componentType": "atom",
+  "mutability": "fixed",
+  "description": "Adversarial fixture: registered as fixed, then targeted by a 'mutate' request. Must be rejected at Stage 1 before schema parsing — this is a locked door, not a review step.",
+  "api": {
+    "properties": [
+      { "name": "size", "type": "string", "required": false, "default": "medium", "enum": ["small", "medium", "large"] }
+    ]
+  },
+  "tokens": {
+    "consumes": ["--sem-color-test-bg", "--sem-color-test-fg"]
+  },
+  "constraints": [
+    {
+      "id": "locked-token-wall",
+      "type": "token-usage",
+      "rule": { "allowedTiers": ["sem", "ctx"], "consumesOnly": true },
+      "failureBehavior": "reject",
+      "rationale": "The token wall is the contract."
+    }
+  ],
+  "provenance": { "author": "human", "createdAt": "2026-07-11T00:00:00Z", "approvedBy": "michael" }
+}

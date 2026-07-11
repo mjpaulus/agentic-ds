@@ -1,0 +1,28 @@
+{
+  "name": "ds-orphan-parent",
+  "version": "1.0.0",
+  "componentType": "molecule",
+  "mutability": "adaptive",
+  "description": "Adversarial fixture: composition.allowedChildren names a component that is not registered. Closed-world composition must reject this.",
+  "api": {
+    "properties": [
+      { "name": "size", "type": "string", "required": false, "default": "medium", "enum": ["small", "medium", "large"] }
+    ]
+  },
+  "tokens": {
+    "consumes": ["--sem-color-test-bg", "--sem-color-test-fg"]
+  },
+  "composition": {
+    "allowedChildren": ["ds-nonexistent"]
+  },
+  "constraints": [
+    {
+      "id": "orphan-composition",
+      "type": "composition",
+      "rule": { "enforceSlotContent": true },
+      "failureBehavior": "reject",
+      "rationale": "Composition allowlists are closed-world."
+    }
+  ],
+  "provenance": { "author": "human", "createdAt": "2026-07-11T00:00:00Z" }
+}

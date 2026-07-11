@@ -1,0 +1,29 @@
+/* Hand-authored css fixture for ds-button, M2 positive-path test. Uses only
+   tokens declared in specs/ds-button.definition.json's tokens.consumes list.
+   No raw literals, no primitive references. */
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sem-space-inset-control);
+  padding: var(--sem-space-inset-control);
+  border-radius: var(--sem-radius-interactive);
+  font: var(--sem-type-control);
+  background: var(--sem-color-action-bg);
+  color: var(--sem-color-action-fg);
+  transition-duration: var(--ctx-motion-duration);
+  transform: scale(var(--ctx-density-scale));
+}
+
+:host(:hover) {
+  background: var(--sem-color-action-bg-hover);
+}
+
+:host(:focus-visible) {
+  outline: 2px solid var(--sem-color-focus-ring);
+}
+
+:host([variant="danger"]) {
+  background: var(--sem-color-danger-bg);
+  color: var(--sem-color-danger-fg);
+}

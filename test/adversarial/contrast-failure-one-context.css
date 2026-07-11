@@ -1,0 +1,9 @@
+/* Stage 4 / M3 fixture. In the enterprise-saas context, --sem-color-test-fg
+   resolves to a value close enough to --sem-color-test-bg to fail WCAG 2.1 AA
+   contrast (4.5:1) even though the token references here are valid and pass
+   every static M2 check. Establishing that resolution lives in a token file,
+   not here; this comment is prose and is never parsed by the validator. */
+:host {
+  background: var(--sem-color-test-bg);
+  color: var(--sem-color-test-fg);
+}

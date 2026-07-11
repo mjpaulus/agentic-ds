@@ -1,0 +1,25 @@
+{
+  "name": "ds-loosen-test",
+  "version": "1.0.0",
+  "componentType": "atom",
+  "mutability": "adaptive",
+  "description": "Adversarial fixture (extra, beyond the 8): base registration for the ai-mutability-loosening case. Registered human-authored, adaptive.",
+  "api": {
+    "properties": [
+      { "name": "size", "type": "string", "required": false, "default": "medium", "enum": ["small", "medium", "large"] }
+    ]
+  },
+  "tokens": {
+    "consumes": ["--sem-color-test-bg", "--sem-color-test-fg"]
+  },
+  "constraints": [
+    {
+      "id": "loosen-mutability-class",
+      "type": "mutability",
+      "rule": { "class": "adaptive" },
+      "failureBehavior": "reject",
+      "rationale": "mutability class must match declared value"
+    }
+  ],
+  "provenance": { "author": "human", "createdAt": "2026-07-11T00:00:00Z" }
+}
