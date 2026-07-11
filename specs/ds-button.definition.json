@@ -1,0 +1,123 @@
+{
+  "name": "ds-button",
+  "version": "2.0.0",
+  "componentType": "atom",
+  "mutability": "adaptive",
+  "description": "Primary action trigger. Structure and API are locked; visual presentation adapts per context through context-tier token bindings only.",
+
+  "usage": {
+    "contexts": ["consumer-web", "enterprise-saas"],
+    "designPatterns": ["form-action", "call-to-action"]
+  },
+
+  "api": {
+    "properties": [
+      { "name": "variant", "type": "string", "required": false, "default": "primary", "enum": ["primary", "secondary", "danger"], "description": "Visual weight and semantic intent." },
+      { "name": "size", "type": "string", "required": false, "default": "medium", "enum": ["small", "medium", "large"] },
+      { "name": "disabled", "type": "boolean", "required": false, "default": false },
+      { "name": "loading", "type": "boolean", "required": false, "default": false, "description": "Shows progress state and blocks interaction without removing the element from the tab order." }
+    ],
+    "slots": [
+      { "name": "default", "allowedElements": ["ds-badge"], "description": "Button label. Text plus optionally a badge." },
+      { "name": "icon", "allowedElements": [], "description": "Leading icon slot, text/SVG reference only." }
+    ],
+    "events": [
+      { "name": "ds-press", "detailSchema": { "type": "object", "properties": { "originalEvent": {} } }, "description": "Fired on activation via pointer or keyboard. Not fired when disabled or loading." }
+    ]
+  },
+
+  "tokens": {
+    "consumes": [
+      "--sem-color-action-bg",
+      "--sem-color-action-fg",
+      "--sem-color-action-bg-hover",
+      "--sem-color-danger-bg",
+      "--sem-color-danger-fg",
+      "--sem-color-focus-ring",
+      "--sem-radius-interactive",
+      "--sem-space-inset-control",
+      "--sem-type-control",
+      "--ctx-density-scale",
+      "--ctx-motion-duration"
+    ]
+  },
+
+  "variants": [
+    {
+      "name": "standard",
+      "status": "incumbent",
+      "contextPreference": ["consumer-web", "enterprise-saas"],
+      "description": "Baseline presentation in both contexts."
+    },
+    {
+      "name": "compact-affordance",
+      "status": "challenger",
+      "contextPreference": ["enterprise-saas"],
+      "description": "AI-proposed variant: tighter inset and reduced motion for dense enterprise surfaces, hypothesis is lower time-to-interaction in toolbar placements."
+    }
+  ],
+
+  "composition": {
+    "allowedParents": ["ds-form-field", "ds-search-bar"],
+    "maxInstancesPerParent": 3
+  },
+
+  "constraints": [
+    {
+      "id": "btn-token-wall",
+      "type": "token-usage",
+      "rule": { "allowedTiers": ["sem", "ctx"], "consumesOnly": true },
+      "failureBehavior": "reject",
+      "rationale": "No primitive references, no raw values. The token wall is the contract."
+    },
+    {
+      "id": "btn-a11y",
+      "type": "accessibility",
+      "rule": { "standard": "wcag21aa", "rules": ["color-contrast", "button-name", "focus-order-semantics"], "contexts": ["consumer-web", "enterprise-saas"] },
+      "failureBehavior": "reject",
+      "rationale": "Contrast must pass under both context token resolutions independently."
+    },
+    {
+      "id": "btn-api-lock",
+      "type": "api-stability",
+      "rule": { "signatureHash": "<registry>" },
+      "failureBehavior": "reject",
+      "rationale": "Adaptive class: API drift is structural drift."
+    },
+    {
+      "id": "btn-composition",
+      "type": "composition",
+      "rule": { "enforceSlotContent": true },
+      "failureBehavior": "reject",
+      "rationale": "Slot allowlists are load-bearing; a button that accepts arbitrary children is a layout component in denial."
+    },
+    {
+      "id": "btn-perf",
+      "type": "performance",
+      "rule": { "renderMs": 16, "interactionMs": 100, "bundleKb": 6 },
+      "failureBehavior": "flag",
+      "rationale": "Headless perf numbers are directional; breach goes to review rather than blocking."
+    }
+  ],
+
+  "evolution": {
+    "gate": {
+      "metric": "time-to-interaction",
+      "threshold": 0.05,
+      "minSamples": 500,
+      "windowDays": 14
+    }
+  },
+
+  "performanceBudget": {
+    "renderMs": 16,
+    "interactionMs": 100,
+    "bundleKb": 6
+  },
+
+  "provenance": {
+    "author": "human",
+    "createdAt": "2026-07-11T00:00:00Z",
+    "approvedBy": "michael"
+  }
+}

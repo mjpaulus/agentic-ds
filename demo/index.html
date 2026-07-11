@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en" data-context="consumer-web">
+<head>
+  <meta charset="utf-8" />
+  <title>agentic-ds token demo</title>
+  <link rel="stylesheet" href="../tokens/dist/tokens.css" />
+  <style>
+    :root {
+      color-scheme: light;
+    }
+    body {
+      background: var(--sem-color-surface-bg);
+      color: var(--sem-color-text-primary);
+      font: var(--sem-type-body);
+      margin: 2rem;
+    }
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Token pipeline demo (M1)</h1>
+  <p>
+    This page loads <code>tokens/dist/tokens.css</code> directly and flips
+    <code>data-context</code> on the document element. No component code is
+    involved — every visual change below flows through CSS custom properties.
+  </p>
+
+  <button id="toggle" type="button">Toggle context (currently: <span id="context-label">consumer-web</span>)</button>
+
+  <div style="margin-top: 1.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+    <div
+      class="chip"
+      style="background: var(--sem-color-action-bg); color: var(--sem-color-action-fg); font: var(--sem-type-control); padding: var(--sem-space-inset-control); border-radius: var(--sem-radius-interactive);"
+    >
+      Primary action
+    </div>
+
+    <div
+      class="chip"
+      style="background: var(--sem-color-surface-bg); color: var(--sem-color-text-primary); font: var(--sem-type-body); padding: var(--sem-space-inset-container); border: 1px solid var(--sem-color-input-border); border-radius: var(--sem-radius-container);"
+    >
+      Body text sample on a surface.
+    </div>
+
+    <div
+      class="chip"
+      style="background: var(--sem-color-danger-bg); color: var(--sem-color-danger-fg); font: var(--sem-type-label); padding: var(--sem-space-inset-control); border-radius: var(--sem-radius-interactive);"
+    >
+      Danger label
+    </div>
+  </div>
+
+  <p style="margin-top: 1.5rem; font: var(--sem-type-caption); color: var(--sem-color-text-secondary);">
+    Caption text — validation mode: <span id="validation-mode"></span>, density scale: <span id="density-scale"></span>
+  </p>
+
+  <script>
+    const root = document.documentElement;
+    const toggle = document.getElementById("toggle");
+    const label = document.getElementById("context-label");
+    const validationModeEl = document.getElementById("validation-mode");
+    const densityScaleEl = document.getElementById("density-scale");
+
+    function readCtxTokens() {
+      const styles = getComputedStyle(root);
+      validationModeEl.textContent = styles.getPropertyValue("--ctx-validation-mode").trim();
+      densityScaleEl.textContent = styles.getPropertyValue("--ctx-density-scale").trim();
+    }
+
+    toggle.addEventListener("click", () => {
+      const next = root.dataset.context === "consumer-web" ? "enterprise-saas" : "consumer-web";
+      root.dataset.context = next;
+      label.textContent = next;
+      readCtxTokens();
+    });
+
+    readCtxTokens();
+  </script>
+</body>
+</html>

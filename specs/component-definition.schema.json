@@ -1,0 +1,238 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentic-ds.dev/schemas/component-definition/2.0.0",
+  "title": "Component Definition v2",
+  "description": "Contract for all components in the agentic design system. Every field that governs generation or evolution is machine-checkable. Prose fields exist for human and AI comprehension only; the validator never reads them.",
+  "type": "object",
+  "required": ["name", "version", "componentType", "mutability", "description", "api", "tokens", "constraints", "provenance"],
+  "additionalProperties": false,
+  "properties": {
+
+    "name": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(-[a-z0-9]+)+$",
+      "description": "Custom element name. Must contain a hyphen per the Custom Elements spec."
+    },
+
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$",
+      "description": "Semver. Fixed components may only change via human-authored major/minor bumps."
+    },
+
+    "componentType": {
+      "enum": ["atom", "molecule", "organism"]
+    },
+
+    "mutability": {
+      "enum": ["fixed", "adaptive", "generative"],
+      "description": "The stability class. fixed: structure, API, and styling are locked; regeneration requests are rejected at pipeline entry. adaptive: structure and API are locked (enforced by structural hash and API signature match); styling may vary only through context-tier token bindings. generative: structure, styling, and variants may evolve, but every mutation passes the full constraint pipeline and the evolution gate."
+    },
+
+    "description": {
+      "type": "string",
+      "maxLength": 500
+    },
+
+    "usage": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "contexts": {
+          "type": "array",
+          "items": { "enum": ["consumer-web", "enterprise-saas", "dashboard"] },
+          "minItems": 1
+        },
+        "designPatterns": {
+          "type": "array",
+          "items": { "type": "string" }
+        }
+      }
+    },
+
+    "api": {
+      "type": "object",
+      "description": "The component's public contract. For fixed and adaptive components, the canonical hash of this object must match the registry entry; any drift is a pipeline rejection.",
+      "additionalProperties": false,
+      "required": ["properties"],
+      "properties": {
+        "properties": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name", "type", "required"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "pattern": "^[a-z][a-zA-Z0-9]*$" },
+              "type": { "enum": ["string", "number", "boolean", "object", "array"] },
+              "required": { "type": "boolean" },
+              "default": {},
+              "enum": { "type": "array", "description": "If present, the validator rejects generated usage with values outside this set." },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "slots": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string" },
+              "allowedElements": {
+                "type": "array",
+                "items": { "type": "string" },
+                "description": "Element or component names permitted in this slot. Empty array means text only. Absent means unrestricted."
+              },
+              "description": { "type": "string" }
+            }
+          }
+        },
+        "events": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["name"],
+            "additionalProperties": false,
+            "properties": {
+              "name": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+              "detailSchema": { "type": "object", "description": "JSON Schema for event.detail payload." },
+              "description": { "type": "string" }
+            }
+          }
+        }
+      }
+    },
+
+    "tokens": {
+      "type": "object",
+      "description": "Token consumption contract. Components may reference semantic-tier and context-tier tokens only. Any reference to a primitive-tier token, or to a token not listed in consumes, is a pipeline rejection.",
+      "additionalProperties": false,
+      "required": ["consumes"],
+      "properties": {
+        "consumes": {
+          "type": "array",
+          "items": { "type": "string", "pattern": "^--(sem|ctx)-[a-z0-9-]+$" },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    },
+
+    "variants": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["name", "status"],
+        "additionalProperties": false,
+        "properties": {
+          "name": { "type": "string" },
+          "description": { "type": "string" },
+          "contextPreference": {
+            "type": "array",
+            "items": { "enum": ["consumer-web", "enterprise-saas", "dashboard"] }
+          },
+          "status": {
+            "enum": ["incumbent", "challenger", "deprecated"],
+            "description": "Challengers exist only under an evolution gate. A challenger that fails its gate window is auto-deprecated. Two incumbents for the same context is a registry integrity error."
+          }
+        }
+      }
+    },
+
+    "composition": {
+      "type": "object",
+      "description": "Machine-checkable composition rules. Replaces v1 prose constraints.",
+      "additionalProperties": false,
+      "properties": {
+        "allowedChildren": { "type": "array", "items": { "type": "string" } },
+        "allowedParents": { "type": "array", "items": { "type": "string" } },
+        "maxInstancesPerParent": { "type": "integer", "minimum": 1 }
+      }
+    },
+
+    "constraints": {
+      "type": "array",
+      "description": "Every constraint maps 1:1 to a validator module. No constraint types outside this enum exist; if a rule cannot be expressed here, it is not a constraint, it is a wish.",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["id", "type", "rule", "failureBehavior"],
+        "additionalProperties": false,
+        "properties": {
+          "id": { "type": "string", "pattern": "^[a-z0-9-]+$" },
+          "type": {
+            "enum": ["token-usage", "accessibility", "composition", "mutability", "performance", "api-stability"]
+          },
+          "rule": {
+            "type": "object",
+            "description": "Type-specific parameters consumed by the matching validator module. See constraint-enforcement-spec.md for each module's rule shape."
+          },
+          "failureBehavior": {
+            "enum": ["reject", "flag"],
+            "description": "reject: component never registers. flag: registers with a warning record and enters the human review queue. Default posture for the POC is reject; flag requires justification in rationale."
+          },
+          "rationale": { "type": "string" }
+        }
+      }
+    },
+
+    "evolution": {
+      "type": "object",
+      "description": "Required when mutability is generative or any variant has status challenger.",
+      "additionalProperties": false,
+      "required": ["gate"],
+      "properties": {
+        "supersedes": { "type": "string", "description": "name@version of the definition this one replaces." },
+        "gate": {
+          "type": "object",
+          "required": ["metric", "threshold", "minSamples"],
+          "additionalProperties": false,
+          "properties": {
+            "metric": { "enum": ["task-completion-rate", "interaction-error-rate", "time-to-interaction", "abandonment-rate"] },
+            "threshold": { "type": "number", "description": "Minimum relative improvement over incumbent required to ship. E.g. 0.05 means challenger must beat incumbent by 5%." },
+            "minSamples": { "type": "integer", "minimum": 1 },
+            "windowDays": { "type": "integer", "minimum": 1, "default": 14 }
+          }
+        }
+      }
+    },
+
+    "performanceBudget": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "renderMs": { "type": "number" },
+        "interactionMs": { "type": "number" },
+        "bundleKb": { "type": "number" }
+      }
+    },
+
+    "provenance": {
+      "type": "object",
+      "description": "Who or what authored this definition, and why. Every AI-generated definition must carry a justification: the component explains its own choices. Registry entries without valid provenance are unreachable at generation time.",
+      "additionalProperties": false,
+      "required": ["author", "createdAt"],
+      "properties": {
+        "author": { "enum": ["human", "ai"] },
+        "model": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "approvedBy": { "type": "string" },
+        "justification": {
+          "type": "string",
+          "description": "Required when author is ai. The design rationale in plain language: what was decided, what was rejected, and why. This is the 'here is the call I made' record."
+        }
+      },
+      "if": { "properties": { "author": { "const": "ai" } } },
+      "then": { "required": ["author", "createdAt", "justification"] }
+    }
+  },
+
+  "allOf": [
+    {
+      "if": { "properties": { "mutability": { "const": "generative" } } },
+      "then": { "required": ["name", "version", "componentType", "mutability", "description", "api", "tokens", "constraints", "provenance", "evolution"] }
+    }
+  ]
+}

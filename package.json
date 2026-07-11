@@ -1,0 +1,20 @@
+{
+  "name": "agentic-ds",
+  "version": "0.0.1",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build:tokens": "tsx tokens/build.ts",
+    "test": "vitest run",
+    "test:p1": "vitest run tokens"
+  },
+  "devDependencies": {
+    "@types/node": "^26.1.1",
+    "ajv": "^8.17.1",
+    "happy-dom": "^15.11.7",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.3",
+    "vite": "^6.0.7",
+    "vitest": "^2.1.8"
+  }
+}
