@@ -4,6 +4,21 @@ A proof of concept for a design system an AI can *be*, not merely read.
 
 The system generates, adapts, and evolves Web Components under machine-enforceable constraints, because no human author is guaranteed present at generation time. The differentiator is the enforcement pipeline: **if a rule cannot be executed by the validator, it does not exist in this system.**
 
+## The short version (for everyone)
+
+Design systems today are rulebooks written for humans: use these colors, keep text readable, don't misuse components. Every rule works because a *person* enforces it — a designer follows it, a reviewer catches mistakes. That breaks the moment an AI is generating the UI and no human is in the room.
+
+This POC makes the rules enforce themselves. It's four machines bolted together:
+
+1. **A vocabulary** — components can't say "make it `#3b82f6` blue," only "make it *action-colored*." What that means is decided per context, which is why the same button renders friendly-and-round on a consumer site and dense-and-sharp in an enterprise app with zero changed code.
+2. **A bouncer** — five checkpoints every component must pass before it's allowed to exist. Fail one and it's rejected with a receipt naming exactly what it did wrong.
+3. **A factory** — turns a component description into working code, the same way every time.
+4. **A tournament** — new variants ship by measurably beating the current champion, or they're automatically retired. No ties, no forty button variants accumulating forever.
+
+**Why care?** Everyone is about to point AI at their codebase and say "build the UI." What stops it from producing garbage? Today: human review (doesn't scale) or prompt guidelines (hope, not enforcement). This is an existence proof of a third answer: make the guardrails executable. The AI is free inside the walls; the walls hold no matter what it generates.
+
+**Did it work?** The pipeline rejected 3 of 10 components the AI generated in good faith — each for a real, named reason. A pipeline that passes everything proves nothing; the rejections are the proof. Context adaptation required zero per-context component code, and the variant tournament promoted a winner and killed a loser with the registry structurally unable to hold two champions. Humans authored the constraints; the machine holds them. That asymmetry is the thesis.
+
 ## Status
 
 | Milestone | Scope | Status |
