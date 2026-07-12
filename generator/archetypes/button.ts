@@ -83,6 +83,21 @@ function buildCss(definition: ComponentDefinition): string {
   }
   lines.push("}");
 
+  // The inner native <button> exists for keyboard/AT semantics only; all
+  // visual styling lives on :host. Without this reset the user agent's
+  // default button chrome (background, border, font) paints a box inside
+  // the token-styled pill.
+  lines.push("");
+  lines.push("button {");
+  lines.push("  all: unset;");
+  lines.push("  display: inline-flex;");
+  lines.push("  align-items: center;");
+  lines.push("  gap: inherit;");
+  lines.push("  font: inherit;");
+  lines.push("  color: inherit;");
+  lines.push("  cursor: inherit;");
+  lines.push("}");
+
   lines.push("");
   lines.push(":host([disabled]) {");
   lines.push("  opacity: 0.5;");
@@ -102,8 +117,12 @@ function buildCss(definition: ComponentDefinition): string {
   }
 
   if (consumes.has("--sem-color-focus-ring")) {
+    // Focus lands on the inner button (the host has no tabindex), so the
+    // ring must target it; :host(:focus-visible) would never match. Drawn
+    // on the host's box via :host(:focus-within) so the ring wraps the
+    // visible pill, gated to keyboard focus by the inner :focus-visible.
     lines.push("");
-    lines.push(":host(:focus-visible) {");
+    lines.push(":host(:focus-within:has(button:focus-visible)) {");
     lines.push("  outline: 2px solid var(--sem-color-focus-ring);");
     lines.push("  outline-offset: 2px;");
     lines.push("}");
@@ -141,6 +160,17 @@ function buildCss(definition: ComponentDefinition): string {
 // Source (the custom element class module)
 // -----------------------------------------------------------------------
 
+/**
+ * Whitespace-compact a CSS string for embedding in the runtime module. The
+ * pretty form still ships as the sibling .css artifact; only the .js module
+ * counts against performanceBudget.bundleKb, so readability there is paid
+ * for in budget bytes. Safe here because generated CSS contains no string
+ * literals or comments (the header comment lives in the .css file only).
+ */
+function compactCss(css: string): string {
+  return css.replace(/\s+/g, " ").replace(/ ?([{}:;,]) ?/g, "$1").trim();
+}
+
 function buildSource(definition: ComponentDefinition, template: string, css: string): string {
   const properties = definition.api.properties;
   const slots: ApiSlot[] = definition.api.slots ?? [];
@@ -169,7 +199,7 @@ function buildSource(definition: ComponentDefinition, template: string, css: str
 // ${definition.name}@${definition.version} (${definition.mutability}, archetype: button)
 
 const TEMPLATE = ${JSON.stringify(template)};
-const STYLE = ${JSON.stringify(css)};
+const STYLE = ${JSON.stringify(compactCss(css))};
 const ELEMENT_NAME = ${JSON.stringify(definition.name)};
 const ACTIVATION_EVENT = ${JSON.stringify(activationEvent)};
 

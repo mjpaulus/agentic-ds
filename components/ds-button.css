@@ -16,6 +16,16 @@
   transform: scale(var(--ctx-density-scale));
 }
 
+button {
+  all: unset;
+  display: inline-flex;
+  align-items: center;
+  gap: inherit;
+  font: inherit;
+  color: inherit;
+  cursor: inherit;
+}
+
 :host([disabled]) {
   opacity: 0.5;
   cursor: not-allowed;
@@ -29,7 +39,7 @@
   background: var(--sem-color-action-bg-hover);
 }
 
-:host(:focus-visible) {
+:host(:focus-within:has(button:focus-visible)) {
   outline: 2px solid var(--sem-color-focus-ring);
   outline-offset: 2px;
 }
