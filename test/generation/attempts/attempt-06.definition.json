@@ -1,0 +1,63 @@
+{
+  "name": "ds-progress-bar",
+  "version": "1.0.0",
+  "componentType": "atom",
+  "mutability": "generative",
+  "description": "Determinate horizontal progress indicator for multi-step flows and long-running operations.",
+
+  "usage": {
+    "contexts": ["consumer-web", "enterprise-saas"]
+  },
+
+  "api": {
+    "properties": [
+      { "name": "value", "type": "number", "required": false, "default": 0 },
+      { "name": "max", "type": "number", "required": false, "default": 100 }
+    ]
+  },
+
+  "tokens": {
+    "consumes": [
+      "--sem-color-action-bg",
+      "--sem-color-input-border",
+      "--sem-radius-container",
+      "--sem-space-inset-container",
+      "--ctx-density-scale"
+    ]
+  },
+
+  "constraints": [
+    {
+      "id": "progress-token-wall",
+      "type": "token-usage",
+      "rule": { "allowedTiers": ["sem", "ctx"], "consumesOnly": true },
+      "failureBehavior": "reject",
+      "rationale": "No primitive references, no raw values."
+    },
+    {
+      "id": "progress-a11y",
+      "type": "accessibility",
+      "rule": { "standard": "wcag21aa", "rules": ["color-contrast", "focus-order-semantics"], "contexts": ["consumer-web", "enterprise-saas"] },
+      "failureBehavior": "reject",
+      "rationale": "The filled track against the surrounding border color must clear AA in both contexts; a read-only progress bar is never a focus stop."
+    },
+    {
+      "id": "progress-api-lock",
+      "type": "api-stability",
+      "rule": { "signatureHash": "<registry>" },
+      "failureBehavior": "reject",
+      "rationale": "First registration establishes the API hash; later drift is a rejection."
+    }
+  ],
+
+  "evolution": {
+    "gate": { "metric": "task-completion-rate", "threshold": 0.05, "minSamples": 300, "windowDays": 14 }
+  },
+
+  "provenance": {
+    "author": "ai",
+    "model": "claude-sonnet-5",
+    "createdAt": "2026-07-11T00:00:00Z",
+    "justification": "Design decision: reused --sem-color-action-bg for the filled track (same color family as ds-button's primary action) rather than declaring separate success/warning/danger progress tokens. Rejected alternative: exposing a `variant` property (success/warning/danger) mirroring ds-badge/ds-tag, rejected as scope creep against the stated requirement, which lists only value/max and no severity states — adding an unused enum would be an unjustified API surface with nothing in the requirement to back it. A severity variant is a natural, additive follow-up once a real use case names it."
+  }
+}

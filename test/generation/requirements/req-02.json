@@ -1,0 +1,13 @@
+{
+  "id": "req-02",
+  "name": "ds-toggle-switch",
+  "componentType": "atom",
+  "purpose": "A binary on/off switch, alternative to a checkbox for settings-style boolean input.",
+  "properties": [
+    { "name": "checked", "type": "boolean" },
+    { "name": "disabled", "type": "boolean" }
+  ],
+  "interactions": ["click to toggle", "keyboard activation"],
+  "states": ["on", "off", "disabled"],
+  "contexts": ["consumer-web", "enterprise-saas"]
+}

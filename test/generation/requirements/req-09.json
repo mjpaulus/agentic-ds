@@ -1,0 +1,12 @@
+{
+  "id": "req-09",
+  "name": "ds-stepper",
+  "componentType": "molecule",
+  "purpose": "A horizontal progress-through-steps indicator for multi-step forms, showing each step's completion state.",
+  "properties": [
+    { "name": "activeStep", "type": "number" }
+  ],
+  "interactions": ["none (read-only progress display)"],
+  "states": ["upcoming", "active", "complete"],
+  "contexts": ["consumer-web", "enterprise-saas"]
+}

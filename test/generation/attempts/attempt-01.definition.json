@@ -1,0 +1,70 @@
+{
+  "name": "ds-tag",
+  "version": "1.0.0",
+  "componentType": "atom",
+  "mutability": "generative",
+  "description": "Small removable chip for a single selected value or keyword, e.g. in a filter bar or multi-select summary.",
+
+  "usage": {
+    "contexts": ["consumer-web", "enterprise-saas"]
+  },
+
+  "api": {
+    "properties": [
+      { "name": "variant", "type": "string", "required": false, "default": "neutral", "enum": ["neutral", "info", "success", "error"], "description": "Semantic intent." },
+      { "name": "removable", "type": "boolean", "required": false, "default": false, "description": "Presentational only in this revision; see justification." }
+    ],
+    "slots": [
+      { "name": "default", "allowedElements": [], "description": "Tag text. Text only." }
+    ]
+  },
+
+  "tokens": {
+    "consumes": [
+      "--sem-color-emphasis-bg",
+      "--sem-color-emphasis-fg",
+      "--sem-color-feedback-success",
+      "--sem-color-feedback-error",
+      "--sem-color-surface-bg",
+      "--sem-type-caption",
+      "--sem-space-inset-control",
+      "--sem-radius-interactive",
+      "--ctx-density-scale"
+    ]
+  },
+
+  "constraints": [
+    {
+      "id": "tag-token-wall",
+      "type": "token-usage",
+      "rule": { "allowedTiers": ["sem", "ctx"], "consumesOnly": true },
+      "failureBehavior": "reject",
+      "rationale": "No primitive references, no raw values."
+    },
+    {
+      "id": "tag-a11y",
+      "type": "accessibility",
+      "rule": { "standard": "wcag21aa", "rules": ["color-contrast", "focus-order-semantics"], "contexts": ["consumer-web", "enterprise-saas"] },
+      "failureBehavior": "reject",
+      "rationale": "A non-interactive chip is never a focus stop; contrast must clear AA in both contexts independently."
+    },
+    {
+      "id": "tag-api-lock",
+      "type": "api-stability",
+      "rule": { "signatureHash": "<registry>" },
+      "failureBehavior": "reject",
+      "rationale": "First registration establishes the API hash; later drift is a rejection."
+    }
+  ],
+
+  "evolution": {
+    "gate": { "metric": "interaction-error-rate", "threshold": 0.1, "minSamples": 300, "windowDays": 14 }
+  },
+
+  "provenance": {
+    "author": "ai",
+    "model": "claude-sonnet-5",
+    "createdAt": "2026-07-11T00:00:00Z",
+    "justification": "Design decision: reused ds-badge's exact color strategy (variant changes foreground only, against emphasis/feedback backdrops that already declare a checked ds.contrastPair) rather than inventing a new palette for tags. Rejected alternative: making `removable` a real interactive affordance that fires a `ds-remove` event and is keyboard-operable, matching how a chip usually behaves in other systems. Rejected for this first registration because keyboard operability requires a dedicated activation-event contract and a Stage 4 keyboard probe target this generic component doesn't implement yet; shipping a boolean that only changes appearance (e.g. shows an 'x' glyph) instead of a real control avoids claiming an interaction contract the component can't yet honor. A follow-up generative revision can add the event once removable tags have a proper archetype."
+  }
+}

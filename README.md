@@ -12,18 +12,27 @@ The system generates, adapts, and evolves Web Components under machine-enforceab
 | M2 | Validator stages 1–3 + adversarial suite | ✅ static portion of P2 green |
 | M3 | Generator + rendered verification (Stage 4) | ✅ P2 fully green, P4 partial (button) |
 | M4 | Component set (7 components, both contexts) | ✅ P4 green |
-| M5 | Generation flow + evolution gate | not started |
+| M5 | Generation flow + evolution gate | ✅ P3 (7/10 corpus attempts register) + P5 (gate promote/auto-deprecate/invariant) green |
 
 ## Quick start
 
 ```sh
 npm install
-npm run build:tokens   # specs/tokens.json → tokens/dist/context-*.css
-npm test               # all tests, including the P1 criteria
-npx vite               # then open http://localhost:5173/demo/
+npm run build:tokens      # specs/tokens.json → tokens/dist/context-*.css
+npm run build:components  # definitions → /components (7 real components)
+npm run build:demo-data   # real pipeline records → demo/demo-data.json (M5 demo steps 2-3)
+npm test                  # all tests, P1 through P5
+npm run dev                # then open http://localhost:5173/demo/index.html
 ```
 
 The demo page renders token-styled elements and a context toggle. Flipping `data-context` on `<html>` between `consumer-web` and `enterprise-saas` re-skins, re-densifies, and changes behavioral token values with zero component code — every visual difference flows through CSS custom properties emitted per context.
+
+## Demo script (five steps, success-criteria.md)
+
+1. **Context flip.** Toggle `data-context` at the top of the page; every component re-skins, re-densifies, and changes validation behavior with zero component code paths branching on context.
+2. **Generate a component.** Pick one of ten recorded structured requirements, click Generate. The recorded AI-authored definition's real pipeline record (from `npm run build:demo-data`) is replayed: on pass, its justification and a token-styled live preview render; on fail, the exact rejecting stage/constraint/source-span renders instead.
+3. **Poison the pipeline.** Submit a definition whose CSS references a primitive token. Watch it die with the real validation record naming `--prim-color-blue-500` by source span.
+4. **Run the gate.** Live in the browser: seeded synthetic telemetry for ds-button's `standard` vs. `compact-affordance` variants feeds `telemetry/gate.ts`. A winning seed promotes (re-running Stages 2-4 via a precomputed real revalidation record before the registry flips); a losing seed auto-deprecates once the window closes. The status board shows one incumbent per context throughout.
 
 ## How the token pipeline works
 
@@ -60,10 +69,19 @@ See [specs/success-criteria.md](specs/success-criteria.md) for the falsifiable c
                    one-incumbent-per-context invariant enforced on every write.
 /test/adversarial  11 deliberately broken definitions, each violating exactly one constraint.
                    The pipeline's proof: every one dies with a record naming the violation.
-/demo              Demo page with the data-context switcher.
+/telemetry         Four-event interface, seeded synthetic event generator, gate logic
+                   (browser-safe, zero node imports), and the registry promotion/deprecation
+                   transaction. Node-side pipeline revalidation wiring lives in telemetry/node.ts.
+/generation        Structured-requirement → AI-authored definition flow (the corpus-lookup seam
+                   `generateDefinition`) and the generic css/source fallback synthesis used to
+                   validate novel, archetype-less components (generation/synthesize.ts).
+/test/generation   Ten structured requirements + ten recorded good-faith attempts (P3 corpus),
+                   run once through the real pipeline. results.md records the honest outcome.
+/demo              Demo page: context switcher (M1) plus the M5 generate/poison/gate-simulation
+                   steps, backed by demo/build-demo-data.ts's real pipeline records.
 ```
 
-Later milestones add `/generator`, `/telemetry`, and `/components` — in that order. The sequencing rule: the validator exists before the generator. The system that says no is built before the system that creates.
+The sequencing rule: the validator exists before the generator. The system that says no is built before the system that creates.
 
 ## Specs (read in this order)
 

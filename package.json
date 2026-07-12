@@ -6,9 +6,12 @@
   "scripts": {
     "build:tokens": "tsx tokens/build.ts",
     "build:components": "tsx generator/build.ts",
+    "build:demo-data": "tsx demo/build-demo-data.ts",
+    "dev": "vite",
     "test": "vitest run",
     "test:p1": "vitest run tokens",
-    "test:p2": "vitest run validator registry test"
+    "test:p2": "vitest run validator registry test",
+    "test:p5": "vitest run test/evolution"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

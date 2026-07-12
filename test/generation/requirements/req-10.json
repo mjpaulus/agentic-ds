@@ -1,0 +1,13 @@
+{
+  "id": "req-10",
+  "name": "ds-rating",
+  "componentType": "atom",
+  "purpose": "A read-only star rating display summarizing an average score, e.g. on a product or review card.",
+  "properties": [
+    { "name": "value", "type": "number" },
+    { "name": "max", "type": "number" }
+  ],
+  "interactions": ["none (read-only in v1)"],
+  "states": ["default"],
+  "contexts": ["consumer-web", "enterprise-saas"]
+}

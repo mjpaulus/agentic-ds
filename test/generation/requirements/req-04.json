@@ -1,0 +1,13 @@
+{
+  "id": "req-04",
+  "name": "ds-avatar",
+  "componentType": "atom",
+  "purpose": "A circular identity marker showing a user's initials, sized for use in lists, headers, and comment threads.",
+  "properties": [
+    { "name": "initials", "type": "string" },
+    { "name": "size", "type": "string", "values": ["small", "medium", "large"] }
+  ],
+  "interactions": ["none"],
+  "states": ["default"],
+  "contexts": ["consumer-web", "enterprise-saas"]
+}

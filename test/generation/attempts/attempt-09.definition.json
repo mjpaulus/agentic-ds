@@ -1,0 +1,74 @@
+{
+  "name": "ds-stepper",
+  "version": "1.0.0",
+  "componentType": "molecule",
+  "mutability": "generative",
+  "description": "Horizontal progress-through-steps indicator for multi-step forms, showing each step's completion state.",
+
+  "usage": {
+    "contexts": ["consumer-web", "enterprise-saas"]
+  },
+
+  "api": {
+    "properties": [
+      { "name": "activeStep", "type": "number", "required": false, "default": 0 }
+    ]
+  },
+
+  "tokens": {
+    "consumes": [
+      "--sem-color-action-bg",
+      "--sem-color-text-secondary",
+      "--sem-color-surface-bg",
+      "--sem-type-label",
+      "--sem-space-gap-related",
+      "--ctx-density-scale"
+    ]
+  },
+
+  "composition": {
+    "allowedChildren": ["ds-step-item"]
+  },
+
+  "constraints": [
+    {
+      "id": "stepper-token-wall",
+      "type": "token-usage",
+      "rule": { "allowedTiers": ["sem", "ctx"], "consumesOnly": true },
+      "failureBehavior": "reject",
+      "rationale": "No primitive references, no raw values."
+    },
+    {
+      "id": "stepper-a11y",
+      "type": "accessibility",
+      "rule": { "standard": "wcag21aa", "rules": ["color-contrast", "focus-order-semantics"], "contexts": ["consumer-web", "enterprise-saas"] },
+      "failureBehavior": "reject",
+      "rationale": "The active step's label color against the surface must clear AA in both contexts; the stepper itself is a read-only display, never a focus stop."
+    },
+    {
+      "id": "stepper-api-lock",
+      "type": "api-stability",
+      "rule": { "signatureHash": "<registry>" },
+      "failureBehavior": "reject",
+      "rationale": "First registration establishes the API hash; later drift is a rejection."
+    },
+    {
+      "id": "stepper-composition",
+      "type": "composition",
+      "rule": {},
+      "failureBehavior": "reject",
+      "rationale": "Composition allowlists are closed-world; every named child must already be registered."
+    }
+  ],
+
+  "evolution": {
+    "gate": { "metric": "task-completion-rate", "threshold": 0.05, "minSamples": 300, "windowDays": 14 }
+  },
+
+  "provenance": {
+    "author": "ai",
+    "model": "claude-sonnet-5",
+    "createdAt": "2026-07-11T00:00:00Z",
+    "justification": "Design decision: modeled each step as a dedicated child component, `ds-step-item`, carrying its own upcoming/active/complete state, instead of flattening steps into plain slotted text. Rejected alternative: representing steps as a single comma-or-array-shaped string property on ds-stepper itself (e.g. `steps=\"Cart,Shipping,Payment\"`) with no per-step markup at all -- rejected because that approach can't express per-step state independently (a plain string can't carry 'complete' vs 'active' per item) and would push formatting logic into attribute parsing rather than composition, which is exactly the kind of thing this system's composition rules exist to make explicit and checkable instead. The tradeoff acknowledged here: composition.allowedChildren names `ds-step-item`, which is not yet a registered component in this submission -- children must register before the parent that names them (see this repo's own atoms-before-molecules registration order), and this first submission does not include a separate ds-step-item registration, so the closed-world composition check is expected to have something real to reject rather than silently passing on an unverifiable reference."
+  }
+}

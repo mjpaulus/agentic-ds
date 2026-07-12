@@ -1,0 +1,13 @@
+{
+  "id": "req-06",
+  "name": "ds-progress-bar",
+  "componentType": "atom",
+  "purpose": "A determinate horizontal progress indicator for multi-step flows and long-running operations.",
+  "properties": [
+    { "name": "value", "type": "number" },
+    { "name": "max", "type": "number" }
+  ],
+  "interactions": ["none"],
+  "states": ["default"],
+  "contexts": ["consumer-web", "enterprise-saas"]
+}

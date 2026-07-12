@@ -1,0 +1,13 @@
+{
+  "id": "req-03",
+  "name": "ds-alert",
+  "componentType": "molecule",
+  "purpose": "A banner surfacing a page- or section-level status message (info, success, error), optionally dismissible.",
+  "properties": [
+    { "name": "variant", "type": "string", "values": ["info", "success", "error"] },
+    { "name": "dismissible", "type": "boolean" }
+  ],
+  "interactions": ["dismiss (future revision)"],
+  "states": ["info", "success", "error"],
+  "contexts": ["consumer-web", "enterprise-saas"]
+}

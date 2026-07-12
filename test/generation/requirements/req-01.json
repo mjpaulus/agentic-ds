@@ -1,0 +1,13 @@
+{
+  "id": "req-01",
+  "name": "ds-tag",
+  "componentType": "atom",
+  "purpose": "A small removable chip used to display a single selected value or keyword, e.g. in a filter bar or multi-select summary.",
+  "properties": [
+    { "name": "variant", "type": "string", "values": ["neutral", "info", "success", "error"] },
+    { "name": "removable", "type": "boolean" }
+  ],
+  "interactions": ["none in v1 (removable is presentational only; interactive removal is a future revision)"],
+  "states": ["default", "removable"],
+  "contexts": ["consumer-web", "enterprise-saas"]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "req-05",
+  "name": "ds-tooltip",
+  "componentType": "atom",
+  "purpose": "A short, dark-surfaced popover with explanatory text, anchored to a trigger element.",
+  "properties": [
+    { "name": "text", "type": "string" },
+    { "name": "placement", "type": "string", "values": ["top", "bottom", "left", "right"] }
+  ],
+  "interactions": ["shown on hover/focus of an anchor (future revision wires the anchor relationship)"],
+  "states": ["visible", "hidden"],
+  "contexts": ["consumer-web", "enterprise-saas"]
+}

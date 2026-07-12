@@ -1,11 +1,11 @@
 // Component registry: the passport office referenced in
 // constraint-enforcement-spec.md Section 1 Stage 5. In-memory Map with
-// optional JSON-file persistence. The incumbent invariant (one incumbent per
-// component per context) is enforced on every write, never assumed.
-
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { dirname } from "node:path";
-import type { ComponentDefinition, ValidationRecord } from "../validator/types.js";
+// optional pluggable persistence. Browser-safe: NO unconditional node
+// imports here (M5 requirement — telemetry/gate.ts and telemetry/evolution.ts
+// run in the demo page and touch the Registry directly). Node-backed JSON
+// persistence lives in registry/node-persistence.ts and is injected, not
+// imported by default; see that file's header comment.
+import type { ComponentDefinition, ValidationRecord, VariantEntry } from "../validator/types.js";
 
 export interface RegistryEntry {
   name: string;
@@ -60,12 +60,29 @@ function checkIncumbentInvariant(entry: RegistryEntry): void {
   }
 }
 
+/**
+ * Pluggable persistence. The Registry class never imports node:fs directly —
+ * a node-backed implementation (registry/node-persistence.ts) is injected by
+ * callers that run in node; browser callers (the demo page, gate.ts,
+ * evolution.ts) simply omit it and get a pure in-memory registry.
+ */
+export interface RegistryPersistence {
+  load(): RegistryEntry[];
+  save(entries: RegistryEntry[]): void;
+}
+
+/** One status update: flip a single variant's status. Applied in a batch — see `updateVariantStatuses`. */
+export interface VariantStatusUpdate {
+  variantName: string;
+  status: VariantEntry["status"];
+}
+
 export class Registry {
   private entries = new Map<string, RegistryEntry>();
 
-  constructor(private readonly persistPath?: string) {
-    if (this.persistPath && existsSync(this.persistPath)) {
-      this.load();
+  constructor(private readonly persistence?: RegistryPersistence) {
+    if (this.persistence) {
+      for (const entry of this.persistence.load()) this.entries.set(entry.name, entry);
     }
   }
 
@@ -74,6 +91,36 @@ export class Registry {
     checkIncumbentInvariant(entry);
     this.entries.set(entry.name, entry);
     this.save();
+  }
+
+  /**
+   * Apply one or more variant status changes to an existing entry's
+   * definition in a SINGLE write, so the incumbent invariant is checked
+   * against the final post-transaction state only — two incumbents mid-
+   * transaction must be structurally impossible, not merely caught after
+   * the fact. Used by telemetry/evolution.ts for promotion (challenger ->
+   * incumbent, former incumbent -> deprecated) and auto-deprecation.
+   * Throws RegistryIntegrityError (and leaves the registry untouched) if the
+   * resulting variant list would violate the one-incumbent-per-context rule.
+   */
+  updateVariantStatuses(componentName: string, updates: VariantStatusUpdate[]): RegistryEntry {
+    const existing = this.entries.get(componentName);
+    if (!existing) {
+      throw new Error(`updateVariantStatuses: component "${componentName}" is not registered.`);
+    }
+    const updateByName = new Map(updates.map((u) => [u.variantName, u.status]));
+    const nextVariants = (existing.definition.variants ?? []).map((v) => {
+      const nextStatus = updateByName.get(v.name);
+      return nextStatus ? { ...v, status: nextStatus } : v;
+    });
+    const nextEntry: RegistryEntry = {
+      ...existing,
+      definition: { ...existing.definition, variants: nextVariants },
+    };
+    checkIncumbentInvariant(nextEntry);
+    this.entries.set(componentName, nextEntry);
+    this.save();
+    return nextEntry;
   }
 
   get(name: string): RegistryEntry | undefined {
@@ -95,17 +142,7 @@ export class Registry {
   }
 
   private save(): void {
-    if (!this.persistPath) return;
-    const dir = dirname(this.persistPath);
-    if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
-    const serializable = Array.from(this.entries.values());
-    writeFileSync(this.persistPath, JSON.stringify(serializable, null, 2), "utf-8");
-  }
-
-  private load(): void {
-    if (!this.persistPath) return;
-    const raw = readFileSync(this.persistPath, "utf-8");
-    const parsed = JSON.parse(raw) as RegistryEntry[];
-    for (const entry of parsed) this.entries.set(entry.name, entry);
+    if (!this.persistence) return;
+    this.persistence.save(Array.from(this.entries.values()));
   }
 }

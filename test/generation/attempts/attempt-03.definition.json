@@ -1,0 +1,70 @@
+{
+  "name": "ds-alert",
+  "version": "1.0.0",
+  "componentType": "molecule",
+  "mutability": "generative",
+  "description": "Banner surfacing a page- or section-level status message (info, success, error), optionally dismissible.",
+
+  "usage": {
+    "contexts": ["consumer-web", "enterprise-saas"]
+  },
+
+  "api": {
+    "properties": [
+      { "name": "variant", "type": "string", "required": false, "default": "info", "enum": ["info", "success", "error"] },
+      { "name": "dismissible", "type": "boolean", "required": false, "default": false, "description": "Presentational only in this revision; see justification." }
+    ],
+    "slots": [
+      { "name": "default", "allowedElements": [], "description": "Alert message text." }
+    ]
+  },
+
+  "tokens": {
+    "consumes": [
+      "--sem-color-emphasis-bg",
+      "--sem-color-emphasis-fg",
+      "--sem-color-feedback-success",
+      "--sem-color-feedback-error",
+      "--sem-color-surface-bg",
+      "--sem-type-body",
+      "--sem-space-inset-container",
+      "--sem-radius-container",
+      "--ctx-density-scale"
+    ]
+  },
+
+  "constraints": [
+    {
+      "id": "alert-token-wall",
+      "type": "token-usage",
+      "rule": { "allowedTiers": ["sem", "ctx"], "consumesOnly": true },
+      "failureBehavior": "reject",
+      "rationale": "No primitive references, no raw values."
+    },
+    {
+      "id": "alert-a11y",
+      "type": "accessibility",
+      "rule": { "standard": "wcag21aa", "rules": ["color-contrast", "focus-order-semantics"], "contexts": ["consumer-web", "enterprise-saas"] },
+      "failureBehavior": "reject",
+      "rationale": "Contrast for every variant's foreground/background pairing must independently clear AA in both contexts."
+    },
+    {
+      "id": "alert-api-lock",
+      "type": "api-stability",
+      "rule": { "signatureHash": "<registry>" },
+      "failureBehavior": "reject",
+      "rationale": "First registration establishes the API hash; later drift is a rejection."
+    }
+  ],
+
+  "evolution": {
+    "gate": { "metric": "abandonment-rate", "threshold": 0.05, "minSamples": 300, "windowDays": 14 }
+  },
+
+  "provenance": {
+    "author": "ai",
+    "model": "claude-sonnet-5",
+    "createdAt": "2026-07-11T00:00:00Z",
+    "justification": "Design decision: reused ds-badge's exact variant-color strategy (foreground swap over an emphasis/feedback backdrop, all already declared as ds.contrastPair) instead of a solid-color-per-variant banner. Rejected alternative: a full-bleed colored background per variant (e.g. solid red for error), which is the more conventional alert pattern and reads with more visual weight. Rejected for this registration because none of --sem-color-danger-bg/--sem-color-feedback-error is declared with a contrastPair against arbitrary banner body text at --sem-type-body sizes, and inventing a new pair is a tokens.json edit outside an AI-authored definition's scope; reusing the already-checked emphasis/feedback pairing keeps the banner inside the existing, verified token wall instead of an unchecked surface."
+  }
+}

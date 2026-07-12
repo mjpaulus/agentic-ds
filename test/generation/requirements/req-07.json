@@ -1,0 +1,15 @@
+{
+  "id": "req-07",
+  "name": "ds-radio-group",
+  "componentType": "molecule",
+  "purpose": "A labeled group of mutually exclusive options for a single-choice form field.",
+  "properties": [
+    { "name": "name", "type": "string" },
+    { "name": "label", "type": "string" },
+    { "name": "value", "type": "string" }
+  ],
+  "interactions": ["select one option"],
+  "states": ["default", "selected"],
+  "contexts": ["consumer-web", "enterprise-saas"],
+  "needsValidationBehavior": false
+}

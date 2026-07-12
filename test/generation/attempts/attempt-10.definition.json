@@ -1,0 +1,63 @@
+{
+  "name": "ds-rating",
+  "version": "1.0.0",
+  "componentType": "atom",
+  "mutability": "generative",
+  "description": "Read-only star rating display summarizing an average score, e.g. on a product or review card.",
+
+  "usage": {
+    "contexts": ["consumer-web", "enterprise-saas"]
+  },
+
+  "api": {
+    "properties": [
+      { "name": "value", "type": "number", "required": false, "default": 0 },
+      { "name": "max", "type": "number", "required": false, "default": 5 }
+    ]
+  },
+
+  "tokens": {
+    "consumes": [
+      "--sem-color-feedback-success",
+      "--sem-color-surface-bg",
+      "--sem-type-label",
+      "--sem-space-gap-related",
+      "--ctx-density-scale"
+    ]
+  },
+
+  "constraints": [
+    {
+      "id": "rating-token-wall",
+      "type": "token-usage",
+      "rule": { "allowedTiers": ["sem", "ctx"], "consumesOnly": true },
+      "failureBehavior": "reject",
+      "rationale": "No primitive references, no raw values."
+    },
+    {
+      "id": "rating-a11y",
+      "type": "accessibility",
+      "rule": { "standard": "wcag21aa", "rules": ["color-contrast", "focus-order-semantics"], "contexts": ["consumer-web", "enterprise-saas"] },
+      "failureBehavior": "reject",
+      "rationale": "Filled-star color against the surface must clear AA in both contexts; a read-only rating is never a focus stop."
+    },
+    {
+      "id": "rating-api-lock",
+      "type": "api-stability",
+      "rule": { "signatureHash": "<registry>" },
+      "failureBehavior": "reject",
+      "rationale": "First registration establishes the API hash; later drift is a rejection."
+    }
+  ],
+
+  "evolution": {
+    "gate": { "metric": "task-completion-rate", "threshold": 0.03, "minSamples": 250, "windowDays": 14 }
+  },
+
+  "provenance": {
+    "author": "ai",
+    "model": "claude-sonnet-5",
+    "createdAt": "2026-07-11T00:00:00Z",
+    "justification": "Design decision: reused --sem-color-feedback-success as the filled-star color, trading a brand-conventional gold/amber star for a token-compliant 'positive signal' color. Rejected alternative: a raw hex literal (#f5b301, a common star-rating amber) for the filled state, which is what a naive implementation would reach for first since no sem token represents 'rating gold'. Rejected outright because a raw color literal in generated CSS is an unconditional rejection under the token wall (constraint-enforcement-spec.md Section 3), not merely a style preference; --sem-color-feedback-success is the closest existing checked token semantically ('this is good'), and this substitution is flagged here for human review rather than treated as a settled design decision."
+  }
+}

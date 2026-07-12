@@ -1,0 +1,2149 @@
+{
+  "generatedAt": "2026-07-12T12:00:04.144Z",
+  "p3": [
+    {
+      "requirementId": "req-01",
+      "requirement": {
+        "id": "req-01",
+        "name": "ds-tag",
+        "componentType": "atom",
+        "purpose": "A small removable chip used to display a single selected value or keyword, e.g. in a filter bar or multi-select summary.",
+        "properties": [
+          {
+            "name": "variant",
+            "type": "string",
+            "values": [
+              "neutral",
+              "info",
+              "success",
+              "error"
+            ]
+          },
+          {
+            "name": "removable",
+            "type": "boolean"
+          }
+        ],
+        "interactions": [
+          "none in v1 (removable is presentational only; interactive removal is a future revision)"
+        ],
+        "states": [
+          "default",
+          "removable"
+        ],
+        "contexts": [
+          "consumer-web",
+          "enterprise-saas"
+        ]
+      },
+      "definition": {
+        "name": "ds-tag",
+        "version": "1.0.0",
+        "componentType": "atom",
+        "mutability": "generative",
+        "description": "Small removable chip for a single selected value or keyword, e.g. in a filter bar or multi-select summary.",
+        "usage": {
+          "contexts": [
+            "consumer-web",
+            "enterprise-saas"
+          ]
+        },
+        "api": {
+          "properties": [
+            {
+              "name": "variant",
+              "type": "string",
+              "required": false,
+              "default": "neutral",
+              "enum": [
+                "neutral",
+                "info",
+                "success",
+                "error"
+              ],
+              "description": "Semantic intent."
+            },
+            {
+              "name": "removable",
+              "type": "boolean",
+              "required": false,
+              "default": false,
+              "description": "Presentational only in this revision; see justification."
+            }
+          ],
+          "slots": [
+            {
+              "name": "default",
+              "allowedElements": [],
+              "description": "Tag text. Text only."
+            }
+          ]
+        },
+        "tokens": {
+          "consumes": [
+            "--sem-color-emphasis-bg",
+            "--sem-color-emphasis-fg",
+            "--sem-color-feedback-success",
+            "--sem-color-feedback-error",
+            "--sem-color-surface-bg",
+            "--sem-type-caption",
+            "--sem-space-inset-control",
+            "--sem-radius-interactive",
+            "--ctx-density-scale"
+          ]
+        },
+        "constraints": [
+          {
+            "id": "tag-token-wall",
+            "type": "token-usage",
+            "rule": {
+              "allowedTiers": [
+                "sem",
+                "ctx"
+              ],
+              "consumesOnly": true
+            },
+            "failureBehavior": "reject",
+            "rationale": "No primitive references, no raw values."
+          },
+          {
+            "id": "tag-a11y",
+            "type": "accessibility",
+            "rule": {
+              "standard": "wcag21aa",
+              "rules": [
+                "color-contrast",
+                "focus-order-semantics"
+              ],
+              "contexts": [
+                "consumer-web",
+                "enterprise-saas"
+              ]
+            },
+            "failureBehavior": "reject",
+            "rationale": "A non-interactive chip is never a focus stop; contrast must clear AA in both contexts independently."
+          },
+          {
+            "id": "tag-api-lock",
+            "type": "api-stability",
+            "rule": {
+              "signatureHash": "<registry>"
+            },
+            "failureBehavior": "reject",
+            "rationale": "First registration establishes the API hash; later drift is a rejection."
+          }
+        ],
+        "evolution": {
+          "gate": {
+            "metric": "interaction-error-rate",
+            "threshold": 0.1,
+            "minSamples": 300,
+            "windowDays": 14
+          }
+        },
+        "provenance": {
+          "author": "ai",
+          "model": "claude-sonnet-5",
+          "createdAt": "2026-07-11T00:00:00Z",
+          "justification": "Design decision: reused ds-badge's exact color strategy (variant changes foreground only, against emphasis/feedback backdrops that already declare a checked ds.contrastPair) rather than inventing a new palette for tags. Rejected alternative: making `removable` a real interactive affordance that fires a `ds-remove` event and is keyboard-operable, matching how a chip usually behaves in other systems. Rejected for this first registration because keyboard operability requires a dedicated activation-event contract and a Stage 4 keyboard probe target this generic component doesn't implement yet; shipping a boolean that only changes appearance (e.g. shows an 'x' glyph) instead of a real control avoids claiming an interaction contract the component can't yet honor. A follow-up generative revision can add the event once removable tags have a proper archetype."
+        }
+      },
+      "css": ":host {\n  display: inline-flex;\n  align-items: center;\n  background: var(--sem-color-emphasis-bg);\n  color: var(--sem-color-emphasis-fg);\n  color: var(--sem-color-feedback-success);\n  color: var(--sem-color-feedback-error);\n  background: var(--sem-color-surface-bg);\n  font: var(--sem-type-caption);\n  padding: var(--sem-space-inset-control);\n  border-radius: var(--sem-radius-interactive);\n  --_density-scale-ref: var(--ctx-density-scale);\n}\n",
+      "record": {
+        "candidateName": "ds-tag",
+        "passed": true,
+        "outcome": "registered",
+        "stages": [
+          {
+            "stage": 1,
+            "name": "stage1-gatekeeping",
+            "passed": true,
+            "notes": [
+              "register of new name \"ds-tag\" passes through"
+            ]
+          },
+          {
+            "stage": 2,
+            "name": "stage2-schema",
+            "passed": true,
+            "notes": [
+              "definition validates against component-definition.schema.json"
+            ]
+          },
+          {
+            "stage": 3,
+            "name": "stage3-constraints",
+            "passed": true,
+            "notes": [
+              "accessibility: deferred to Stage 4 / M3 (requires rendered instance)",
+              "api-stability: \"ds-tag\" not yet registered; hash aeccf25d38aa3b75a296c79eaaa6d03722be74af4332323ca87ab38b421671cb will be stored on registration"
+            ]
+          },
+          {
+            "stage": 4,
+            "name": "stage4-rendered",
+            "passed": true,
+            "notes": [
+              "contrast (consumer-web): 5 declared pair(s) checked, all pass AA",
+              "a11y rule \"focus-order-semantics\" (consumer-web): pass",
+              "keyboard operability (consumer-web): skipped, no api.events declared",
+              "contrast (enterprise-saas): 5 declared pair(s) checked, all pass AA",
+              "a11y rule \"focus-order-semantics\" (enterprise-saas): pass",
+              "keyboard operability (enterprise-saas): skipped, no api.events declared"
+            ]
+          }
+        ],
+        "warnings": [],
+        "timestamp": "2026-07-12T12:00:04.083Z"
+      }
+    },
+    {
+      "requirementId": "req-02",
+      "requirement": {
+        "id": "req-02",
+        "name": "ds-toggle-switch",
+        "componentType": "atom",
+        "purpose": "A binary on/off switch, alternative to a checkbox for settings-style boolean input.",
+        "properties": [
+          {
+            "name": "checked",
+            "type": "boolean"
+          },
+          {
+            "name": "disabled",
+            "type": "boolean"
+          }
+        ],
+        "interactions": [
+          "click to toggle",
+          "keyboard activation"
+        ],
+        "states": [
+          "on",
+          "off",
+          "disabled"
+        ],
+        "contexts": [
+          "consumer-web",
+          "enterprise-saas"
+        ]
+      },
+      "definition": {
+        "name": "ds-toggle-switch",
+        "version": "1.0.0",
+        "componentType": "atom",
+        "mutability": "generative",
+        "description": "Binary on/off switch for settings-style boolean input, alternative to a checkbox.",
+        "usage": {
+          "contexts": [
+            "consumer-web",
+            "enterprise-saas"
+          ]
+        },
+        "api": {
+          "properties": [
+            {
+              "name": "checked",
+              "type": "boolean",
+              "required": false,
+              "default": false
+            },
+            {
+              "name": "disabled",
+              "type": "boolean",
+              "required": false,
+              "default": false
+            }
+          ]
+        },
+        "tokens": {
+          "consumes": [
+            "--sem-color-action-bg",
+            "--sem-color-action-fg",
+            "--sem-color-input-border",
+            "--sem-color-focus-ring",
+            "--sem-radius-interactive",
+            "--sem-space-inset-control",
+            "--ctx-density-scale",
+            "--ctx-motion-duration"
+          ]
+        },
+        "constraints": [
+          {
+            "id": "toggle-token-wall",
+            "type": "token-usage",
+            "rule": {
+              "allowedTiers": [
+                "sem",
+                "ctx"
+              ],
+              "consumesOnly": true
+            },
+            "failureBehavior": "reject",
+            "rationale": "No primitive references, no raw values."
+          },
+          {
+            "id": "toggle-a11y",
+            "type": "accessibility",
+            "rule": {
+              "standard": "wcag21aa",
+              "rules": [
+                "color-contrast",
+                "focus-order-semantics"
+              ],
+              "contexts": [
+                "consumer-web",
+                "enterprise-saas"
+              ]
+            },
+            "failureBehavior": "reject",
+            "rationale": "Contrast between the track and its border must clear AA in both contexts; this first registration ships with no api.events, so a full keyboard-activation probe is deferred to the revision that adds the archetype-specific activation contract."
+          },
+          {
+            "id": "toggle-api-lock",
+            "type": "api-stability",
+            "rule": {
+              "signatureHash": "<registry>"
+            },
+            "failureBehavior": "reject",
+            "rationale": "First registration establishes the API hash; later drift is a rejection."
+          }
+        ],
+        "evolution": {
+          "gate": {
+            "metric": "task-completion-rate",
+            "threshold": 0.05,
+            "minSamples": 400,
+            "windowDays": 14
+          }
+        },
+        "provenance": {
+          "author": "ai",
+          "model": "claude-sonnet-5",
+          "createdAt": "2026-07-11T00:00:00Z",
+          "justification": "Design decision: modeled `checked`/`disabled` directly on ds-checkbox's existing boolean-property pattern rather than introducing a three-way state. Rejected alternative: an `indeterminate` third state mirroring some native tri-state checkbox implementations. Rejected because the requirement's stated states are exactly on/off/disabled, and an indeterminate toggle switch has no clear visual or semantic meaning for a binary settings control (unlike a checkbox summarizing a group) — adding an unused state would be an unchecked, unjustified API surface. Kept the token set intentionally close to ds-button's (--sem-color-action-bg/fg, --sem-color-focus-ring) instead of inventing a parallel 'switch' palette, since a toggle switch is functionally an action-colored control."
+        }
+      },
+      "css": ":host {\n  display: inline-flex;\n  align-items: center;\n  background: var(--sem-color-action-bg);\n  color: var(--sem-color-action-fg);\n  color: var(--sem-color-input-border);\n  color: var(--sem-color-focus-ring);\n  border-radius: var(--sem-radius-interactive);\n  padding: var(--sem-space-inset-control);\n  --_density-scale-ref: var(--ctx-density-scale);\n  transition-duration: var(--ctx-motion-duration);\n}\n",
+      "record": {
+        "candidateName": "ds-toggle-switch",
+        "passed": true,
+        "outcome": "registered",
+        "stages": [
+          {
+            "stage": 1,
+            "name": "stage1-gatekeeping",
+            "passed": true,
+            "notes": [
+              "register of new name \"ds-toggle-switch\" passes through"
+            ]
+          },
+          {
+            "stage": 2,
+            "name": "stage2-schema",
+            "passed": true,
+            "notes": [
+              "definition validates against component-definition.schema.json"
+            ]
+          },
+          {
+            "stage": 3,
+            "name": "stage3-constraints",
+            "passed": true,
+            "notes": [
+              "accessibility: deferred to Stage 4 / M3 (requires rendered instance)",
+              "api-stability: \"ds-toggle-switch\" not yet registered; hash c5b5042a447f57074032dd6f676b5fb3cff5163a3b2c9b479fb6361c7bcf4ef7 will be stored on registration"
+            ]
+          },
+          {
+            "stage": 4,
+            "name": "stage4-rendered",
+            "passed": true,
+            "notes": [
+              "contrast (consumer-web): 1 declared pair(s) checked, all pass AA",
+              "a11y rule \"focus-order-semantics\" (consumer-web): pass",
+              "keyboard operability (consumer-web): skipped, no api.events declared",
+              "contrast (enterprise-saas): 1 declared pair(s) checked, all pass AA",
+              "a11y rule \"focus-order-semantics\" (enterprise-saas): pass",
+              "keyboard operability (enterprise-saas): skipped, no api.events declared"
+            ]
+          }
+        ],
+        "warnings": [],
+        "timestamp": "2026-07-12T12:00:04.086Z"
+      }
+    },
+    {
+      "requirementId": "req-03",
+      "requirement": {
+        "id": "req-03",
+        "name": "ds-alert",
+        "componentType": "molecule",
+        "purpose": "A banner surfacing a page- or section-level status message (info, success, error), optionally dismissible.",
+        "properties": [
+          {
+            "name": "variant",
+            "type": "string",
+            "values": [
+              "info",
+              "success",
+              "error"
+            ]
+          },
+          {
+            "name": "dismissible",
+            "type": "boolean"
+          }
+        ],
+        "interactions": [
+          "dismiss (future revision)"
+        ],
+        "states": [
+          "info",
+          "success",
+          "error"
+        ],
+        "contexts": [
+          "consumer-web",
+          "enterprise-saas"
+        ]
+      },
+      "definition": {
+        "name": "ds-alert",
+        "version": "1.0.0",
+        "componentType": "molecule",
+        "mutability": "generative",
+        "description": "Banner surfacing a page- or section-level status message (info, success, error), optionally dismissible.",
+        "usage": {
+          "contexts": [
+            "consumer-web",
+            "enterprise-saas"
+          ]
+        },
+        "api": {
+          "properties": [
+            {
+              "name": "variant",
+              "type": "string",
+              "required": false,
+              "default": "info",
+              "enum": [
+                "info",
+                "success",
+                "error"
+              ]
+            },
+            {
+              "name": "dismissible",
+              "type": "boolean",
+              "required": false,
+              "default": false,
+              "description": "Presentational only in this revision; see justification."
+            }
+          ],
+          "slots": [
+            {
+              "name": "default",
+              "allowedElements": [],
+              "description": "Alert message text."
+            }
+          ]
+        },
+        "tokens": {
+          "consumes": [
+            "--sem-color-emphasis-bg",
+            "--sem-color-emphasis-fg",
+            "--sem-color-feedback-success",
+            "--sem-color-feedback-error",
+            "--sem-color-surface-bg",
+            "--sem-type-body",
+            "--sem-space-inset-container",
+            "--sem-radius-container",
+            "--ctx-density-scale"
+          ]
+        },
+        "constraints": [
+          {
+            "id": "alert-token-wall",
+            "type": "token-usage",
+            "rule": {
+              "allowedTiers": [
+                "sem",
+                "ctx"
+              ],
+              "consumesOnly": true
+            },
+            "failureBehavior": "reject",
+            "rationale": "No primitive references, no raw values."
+          },
+          {
+            "id": "alert-a11y",
+            "type": "accessibility",
+            "rule": {
+              "standard": "wcag21aa",
+              "rules": [
+                "color-contrast",
+                "focus-order-semantics"
+              ],
+              "contexts": [
+                "consumer-web",
+                "enterprise-saas"
+              ]
+            },
+            "failureBehavior": "reject",
+            "rationale": "Contrast for every variant's foreground/background pairing must independently clear AA in both contexts."
+          },
+          {
+            "id": "alert-api-lock",
+            "type": "api-stability",
+            "rule": {
+              "signatureHash": "<registry>"
+            },
+            "failureBehavior": "reject",
+            "rationale": "First registration establishes the API hash; later drift is a rejection."
+          }
+        ],
+        "evolution": {
+          "gate": {
+            "metric": "abandonment-rate",
+            "threshold": 0.05,
+            "minSamples": 300,
+            "windowDays": 14
+          }
+        },
+        "provenance": {
+          "author": "ai",
+          "model": "claude-sonnet-5",
+          "createdAt": "2026-07-11T00:00:00Z",
+          "justification": "Design decision: reused ds-badge's exact variant-color strategy (foreground swap over an emphasis/feedback backdrop, all already declared as ds.contrastPair) instead of a solid-color-per-variant banner. Rejected alternative: a full-bleed colored background per variant (e.g. solid red for error), which is the more conventional alert pattern and reads with more visual weight. Rejected for this registration because none of --sem-color-danger-bg/--sem-color-feedback-error is declared with a contrastPair against arbitrary banner body text at --sem-type-body sizes, and inventing a new pair is a tokens.json edit outside an AI-authored definition's scope; reusing the already-checked emphasis/feedback pairing keeps the banner inside the existing, verified token wall instead of an unchecked surface."
+        }
+      },
+      "css": ":host {\n  display: inline-flex;\n  align-items: center;\n  background: var(--sem-color-emphasis-bg);\n  color: var(--sem-color-emphasis-fg);\n  color: var(--sem-color-feedback-success);\n  color: var(--sem-color-feedback-error);\n  background: var(--sem-color-surface-bg);\n  font: var(--sem-type-body);\n  padding: var(--sem-space-inset-container);\n  border-radius: var(--sem-radius-container);\n  --_density-scale-ref: var(--ctx-density-scale);\n}\n",
+      "record": {
+        "candidateName": "ds-alert",
+        "passed": true,
+        "outcome": "registered",
+        "stages": [
+          {
+            "stage": 1,
+            "name": "stage1-gatekeeping",
+            "passed": true,
+            "notes": [
+              "register of new name \"ds-alert\" passes through"
+            ]
+          },
+          {
+            "stage": 2,
+            "name": "stage2-schema",
+            "passed": true,
+            "notes": [
+              "definition validates against component-definition.schema.json"
+            ]
+          },
+          {
+            "stage": 3,
+            "name": "stage3-constraints",
+            "passed": true,
+            "notes": [
+              "accessibility: deferred to Stage 4 / M3 (requires rendered instance)",
+              "api-stability: \"ds-alert\" not yet registered; hash 63aab69d52ad327fdff45cbfacaa8274293a0f47f541fb6527aa975f93a1b2d1 will be stored on registration"
+            ]
+          },
+          {
+            "stage": 4,
+            "name": "stage4-rendered",
+            "passed": true,
+            "notes": [
+              "contrast (consumer-web): 5 declared pair(s) checked, all pass AA",
+              "a11y rule \"focus-order-semantics\" (consumer-web): pass",
+              "keyboard operability (consumer-web): skipped, no api.events declared",
+              "contrast (enterprise-saas): 5 declared pair(s) checked, all pass AA",
+              "a11y rule \"focus-order-semantics\" (enterprise-saas): pass",
+              "keyboard operability (enterprise-saas): skipped, no api.events declared"
+            ]
+          }
+        ],
+        "warnings": [],
+        "timestamp": "2026-07-12T12:00:04.089Z"
+      }
+    },
+    {
+      "requirementId": "req-04",
+      "requirement": {
+        "id": "req-04",
+        "name": "ds-avatar",
+        "componentType": "atom",
+        "purpose": "A circular identity marker showing a user's initials, sized for use in lists, headers, and comment threads.",
+        "properties": [
+          {
+            "name": "initials",
+            "type": "string"
+          },
+          {
+            "name": "size",
+            "type": "string",
+            "values": [
+              "small",
+              "medium",
+              "large"
+            ]
+          }
+        ],
+        "interactions": [
+          "none"
+        ],
+        "states": [
+          "default"
+        ],
+        "contexts": [
+          "consumer-web",
+          "enterprise-saas"
+        ]
+      },
+      "definition": {
+        "name": "ds-avatar",
+        "version": "1.0.0",
+        "componentType": "atom",
+        "mutability": "generative",
+        "description": "Circular identity marker showing a user's initials, sized for use in lists, headers, and comment threads.",
+        "usage": {
+          "contexts": [
+            "consumer-web",
+            "enterprise-saas"
+          ]
+        },
+        "api": {
+          "properties": [
+            {
+              "name": "initials",
+              "type": "string",
+              "required": false,
+              "default": ""
+            },
+            {
+              "name": "size",
+              "type": "string",
+              "required": false,
+              "default": "medium",
+              "enum": [
+                "small",
+                "medium",
+                "large"
+              ]
+            }
+          ],
+          "slots": [
+            {
+              "name": "default",
+              "allowedElements": [],
+              "description": "Initials fallback text; mirrors the `initials` property for cases where slotted markup is preferred over an attribute."
+            }
+          ]
+        },
+        "tokens": {
+          "consumes": [
+            "--sem-color-emphasis-bg",
+            "--sem-color-emphasis-fg",
+            "--sem-type-label",
+            "--sem-radius-interactive",
+            "--sem-space-inset-control",
+            "--ctx-density-scale"
+          ]
+        },
+        "constraints": [
+          {
+            "id": "avatar-token-wall",
+            "type": "token-usage",
+            "rule": {
+              "allowedTiers": [
+                "sem",
+                "ctx"
+              ],
+              "consumesOnly": true
+            },
+            "failureBehavior": "reject",
+            "rationale": "No primitive references, no raw values."
+          },
+          {
+            "id": "avatar-a11y",
+            "type": "accessibility",
+            "rule": {
+              "standard": "wcag21aa",
+              "rules": [
+                "color-contrast",
+                "focus-order-semantics"
+              ],
+              "contexts": [
+                "consumer-web",
+                "enterprise-saas"
+              ]
+            },
+            "failureBehavior": "reject",
+            "rationale": "Initials text against the emphasis backdrop must clear AA in both contexts; a non-interactive avatar is never a focus stop."
+          },
+          {
+            "id": "avatar-api-lock",
+            "type": "api-stability",
+            "rule": {
+              "signatureHash": "<registry>"
+            },
+            "failureBehavior": "reject",
+            "rationale": "First registration establishes the API hash; later drift is a rejection."
+          }
+        ],
+        "evolution": {
+          "gate": {
+            "metric": "task-completion-rate",
+            "threshold": 0.05,
+            "minSamples": 250,
+            "windowDays": 14
+          }
+        },
+        "provenance": {
+          "author": "ai",
+          "model": "claude-sonnet-5",
+          "createdAt": "2026-07-11T00:00:00Z",
+          "justification": "Design decision: `size` selects among the existing --sem-space-inset-control / --sem-type-label token pair (both already scaled by --ctx-density-scale) rather than a dedicated per-size dimension. Rejected alternative: hardcoding a raw pixel diameter per size value (e.g. small=24px, medium=32px, large=40px) directly in generated CSS. Rejected because that is exactly the raw-value violation the token wall forbids (constraint-enforcement-spec.md Section 3) and would bypass context-driven density scaling entirely; keeping size inside the token system means avatar sizing automatically respects enterprise-saas's tighter density scale instead of needing its own per-context branch."
+        }
+      },
+      "css": ":host {\n  display: inline-flex;\n  align-items: center;\n  background: var(--sem-color-emphasis-bg);\n  color: var(--sem-color-emphasis-fg);\n  font: var(--sem-type-label);\n  border-radius: var(--sem-radius-interactive);\n  padding: var(--sem-space-inset-control);\n  --_density-scale-ref: var(--ctx-density-scale);\n}\n",
+      "record": {
+        "candidateName": "ds-avatar",
+        "passed": true,
+        "outcome": "registered",
+        "stages": [
+          {
+            "stage": 1,
+            "name": "stage1-gatekeeping",
+            "passed": true,
+            "notes": [
+              "register of new name \"ds-avatar\" passes through"
+            ]
+          },
+          {
+            "stage": 2,
+            "name": "stage2-schema",
+            "passed": true,
+            "notes": [
+              "definition validates against component-definition.schema.json"
+            ]
+          },
+          {
+            "stage": 3,
+            "name": "stage3-constraints",
+            "passed": true,
+            "notes": [
+              "accessibility: deferred to Stage 4 / M3 (requires rendered instance)",
+              "api-stability: \"ds-avatar\" not yet registered; hash 14dc8835f4f42532a4c94144b61ba3ace9dc6b797b4537dd3132b8fb11e741e1 will be stored on registration"
+            ]
+          },
+          {
+            "stage": 4,
+            "name": "stage4-rendered",
+            "passed": true,
+            "notes": [
+              "contrast (consumer-web): 1 declared pair(s) checked, all pass AA",
+              "a11y rule \"focus-order-semantics\" (consumer-web): pass",
+              "keyboard operability (consumer-web): skipped, no api.events declared",
+              "contrast (enterprise-saas): 1 declared pair(s) checked, all pass AA",
+              "a11y rule \"focus-order-semantics\" (enterprise-saas): pass",
+              "keyboard operability (enterprise-saas): skipped, no api.events declared"
+            ]
+          }
+        ],
+        "warnings": [],
+        "timestamp": "2026-07-12T12:00:04.092Z"
+      }
+    },
+    {
+      "requirementId": "req-05",
+      "requirement": {
+        "id": "req-05",
+        "name": "ds-tooltip",
+        "componentType": "atom",
+        "purpose": "A short, dark-surfaced popover with explanatory text, anchored to a trigger element.",
+        "properties": [
+          {
+            "name": "text",
+            "type": "string"
+          },
+          {
+            "name": "placement",
+            "type": "string",
+            "values": [
+              "top",
+              "bottom",
+              "left",
+              "right"
+            ]
+          }
+        ],
+        "interactions": [
+          "shown on hover/focus of an anchor (future revision wires the anchor relationship)"
+        ],
+        "states": [
+          "visible",
+          "hidden"
+        ],
+        "contexts": [
+          "consumer-web",
+          "enterprise-saas"
+        ]
+      },
+      "definition": {
+        "name": "ds-tooltip",
+        "version": "1.0.0",
+        "componentType": "atom",
+        "mutability": "generative",
+        "description": "Short, dark-surfaced popover with explanatory text, anchored to a trigger element.",
+        "usage": {
+          "contexts": [
+            "consumer-web",
+            "enterprise-saas"
+          ]
+        },
+        "api": {
+          "properties": [
+            {
+              "name": "text",
+              "type": "string",
+              "required": true
+            },
+            {
+              "name": "placement",
+              "type": "string",
+              "required": false,
+              "default": "top",
+              "enum": [
+                "top",
+                "bottom",
+                "left",
+                "right"
+              ]
+            }
+          ],
+          "slots": [
+            {
+              "name": "default",
+              "allowedElements": [],
+              "description": "Overrides `text` with richer slotted content when present."
+            }
+          ]
+        },
+        "tokens": {
+          "consumes": [
+            "--sem-color-text-primary",
+            "--sem-color-surface-bg",
+            "--sem-type-caption",
+            "--sem-space-inset-control",
+            "--sem-radius-interactive",
+            "--prim-color-gray-900"
+          ]
+        },
+        "constraints": [
+          {
+            "id": "tooltip-token-wall",
+            "type": "token-usage",
+            "rule": {
+              "allowedTiers": [
+                "sem",
+                "ctx"
+              ],
+              "consumesOnly": true
+            },
+            "failureBehavior": "reject",
+            "rationale": "No primitive references, no raw values."
+          },
+          {
+            "id": "tooltip-a11y",
+            "type": "accessibility",
+            "rule": {
+              "standard": "wcag21aa",
+              "rules": [
+                "color-contrast",
+                "focus-order-semantics"
+              ],
+              "contexts": [
+                "consumer-web",
+                "enterprise-saas"
+              ]
+            },
+            "failureBehavior": "reject",
+            "rationale": "Tooltip text must clear AA contrast against its surface in both contexts independently."
+          },
+          {
+            "id": "tooltip-api-lock",
+            "type": "api-stability",
+            "rule": {
+              "signatureHash": "<registry>"
+            },
+            "failureBehavior": "reject",
+            "rationale": "First registration establishes the API hash; later drift is a rejection."
+          }
+        ],
+        "evolution": {
+          "gate": {
+            "metric": "interaction-error-rate",
+            "threshold": 0.1,
+            "minSamples": 300,
+            "windowDays": 14
+          }
+        },
+        "provenance": {
+          "author": "ai",
+          "model": "claude-sonnet-5",
+          "createdAt": "2026-07-11T00:00:00Z",
+          "justification": "Design decision: the requirement calls for a conventionally dark tooltip surface with light text, but no sem-tier token in tokens.json represents an 'inverted' dark surface — every declared surface token (--sem-color-surface-bg) resolves light in both contexts, and no sem color pairs a dark background with light text as a checked ds.contrastPair. Rejected alternative: using --sem-color-text-primary (near-black) as the tooltip's own foreground against --sem-color-surface-bg, which would produce a light tooltip indistinguishable from the page background it floats over -- rejected as visually non-functional for a popover that must read as elevated content. In the absence of a semantic 'inverted surface' token, reached for --prim-color-gray-900 directly as the dark background. This is flagged here deliberately as a likely token-wall violation rather than silently worked around: it names a real gap in tokens.json (no dark/inverted surface token exists yet) that a human should decide how to fill, rather than an AI definition quietly routing around the wall."
+        }
+      },
+      "css": ":host {\n  display: inline-flex;\n  align-items: center;\n  color: var(--sem-color-text-primary);\n  background: var(--sem-color-surface-bg);\n  font: var(--sem-type-caption);\n  padding: var(--sem-space-inset-control);\n  border-radius: var(--sem-radius-interactive);\n  --_--prim-color-gray-900-ref: var(--prim-color-gray-900);\n}\n",
+      "record": {
+        "candidateName": "ds-tooltip",
+        "passed": false,
+        "outcome": "rejected",
+        "stages": [
+          {
+            "stage": 1,
+            "name": "stage1-gatekeeping",
+            "passed": true,
+            "notes": [
+              "register of new name \"ds-tooltip\" passes through"
+            ]
+          },
+          {
+            "stage": 2,
+            "name": "stage2-schema",
+            "passed": false,
+            "notes": [
+              "Schema validation failed: /tokens/consumes/5 must match pattern \"^--(sem|ctx)-[a-z0-9-]+$\""
+            ]
+          }
+        ],
+        "rejection": {
+          "stage": 2,
+          "module": "stage2-schema",
+          "constraintId": null,
+          "message": "Schema validation failed: /tokens/consumes/5 must match pattern \"^--(sem|ctx)-[a-z0-9-]+$\"",
+          "sourceSpan": "/tokens/consumes/5"
+        },
+        "warnings": [],
+        "timestamp": "2026-07-12T12:00:04.092Z"
+      }
+    },
+    {
+      "requirementId": "req-06",
+      "requirement": {
+        "id": "req-06",
+        "name": "ds-progress-bar",
+        "componentType": "atom",
+        "purpose": "A determinate horizontal progress indicator for multi-step flows and long-running operations.",
+        "properties": [
+          {
+            "name": "value",
+            "type": "number"
+          },
+          {
+            "name": "max",
+            "type": "number"
+          }
+        ],
+        "interactions": [
+          "none"
+        ],
+        "states": [
+          "default"
+        ],
+        "contexts": [
+          "consumer-web",
+          "enterprise-saas"
+        ]
+      },
+      "definition": {
+        "name": "ds-progress-bar",
+        "version": "1.0.0",
+        "componentType": "atom",
+        "mutability": "generative",
+        "description": "Determinate horizontal progress indicator for multi-step flows and long-running operations.",
+        "usage": {
+          "contexts": [
+            "consumer-web",
+            "enterprise-saas"
+          ]
+        },
+        "api": {
+          "properties": [
+            {
+              "name": "value",
+              "type": "number",
+              "required": false,
+              "default": 0
+            },
+            {
+              "name": "max",
+              "type": "number",
+              "required": false,
+              "default": 100
+            }
+          ]
+        },
+        "tokens": {
+          "consumes": [
+            "--sem-color-action-bg",
+            "--sem-color-input-border",
+            "--sem-radius-container",
+            "--sem-space-inset-container",
+            "--ctx-density-scale"
+          ]
+        },
+        "constraints": [
+          {
+            "id": "progress-token-wall",
+            "type": "token-usage",
+            "rule": {
+              "allowedTiers": [
+                "sem",
+                "ctx"
+              ],
+              "consumesOnly": true
+            },
+            "failureBehavior": "reject",
+            "rationale": "No primitive references, no raw values."
+          },
+          {
+            "id": "progress-a11y",
+            "type": "accessibility",
+            "rule": {
+              "standard": "wcag21aa",
+              "rules": [
+                "color-contrast",
+                "focus-order-semantics"
+              ],
+              "contexts": [
+                "consumer-web",
+                "enterprise-saas"
+              ]
+            },
+            "failureBehavior": "reject",
+            "rationale": "The filled track against the surrounding border color must clear AA in both contexts; a read-only progress bar is never a focus stop."
+          },
+          {
+            "id": "progress-api-lock",
+            "type": "api-stability",
+            "rule": {
+              "signatureHash": "<registry>"
+            },
+            "failureBehavior": "reject",
+            "rationale": "First registration establishes the API hash; later drift is a rejection."
+          }
+        ],
+        "evolution": {
+          "gate": {
+            "metric": "task-completion-rate",
+            "threshold": 0.05,
+            "minSamples": 300,
+            "windowDays": 14
+          }
+        },
+        "provenance": {
+          "author": "ai",
+          "model": "claude-sonnet-5",
+          "createdAt": "2026-07-11T00:00:00Z",
+          "justification": "Design decision: reused --sem-color-action-bg for the filled track (same color family as ds-button's primary action) rather than declaring separate success/warning/danger progress tokens. Rejected alternative: exposing a `variant` property (success/warning/danger) mirroring ds-badge/ds-tag, rejected as scope creep against the stated requirement, which lists only value/max and no severity states — adding an unused enum would be an unjustified API surface with nothing in the requirement to back it. A severity variant is a natural, additive follow-up once a real use case names it."
+        }
+      },
+      "css": ":host {\n  display: inline-flex;\n  align-items: center;\n  background: var(--sem-color-action-bg);\n  color: var(--sem-color-input-border);\n  border-radius: var(--sem-radius-container);\n  padding: var(--sem-space-inset-container);\n  --_density-scale-ref: var(--ctx-density-scale);\n}\n",
+      "record": {
+        "candidateName": "ds-progress-bar",
+        "passed": true,
+        "outcome": "registered",
+        "stages": [
+          {
+            "stage": 1,
+            "name": "stage1-gatekeeping",
+            "passed": true,
+            "notes": [
+              "register of new name \"ds-progress-bar\" passes through"
+            ]
+          },
+          {
+            "stage": 2,
+            "name": "stage2-schema",
+            "passed": true,
+            "notes": [
+              "definition validates against component-definition.schema.json"
+            ]
+          },
+          {
+            "stage": 3,
+            "name": "stage3-constraints",
+            "passed": true,
+            "notes": [
+              "accessibility: deferred to Stage 4 / M3 (requires rendered instance)",
+              "api-stability: \"ds-progress-bar\" not yet registered; hash 58af0e90613ea481cea75ec3e49d1a1bd04a3c5de23898b5dae7e8d50ae336ea will be stored on registration"
+            ]
+          },
+          {
+            "stage": 4,
+            "name": "stage4-rendered",
+            "passed": true,
+            "notes": [
+              "contrast (consumer-web): 1 declared pair(s) checked, all pass AA",
+              "a11y rule \"focus-order-semantics\" (consumer-web): pass",
+              "keyboard operability (consumer-web): skipped, no api.events declared",
+              "contrast (enterprise-saas): 1 declared pair(s) checked, all pass AA",
+              "a11y rule \"focus-order-semantics\" (enterprise-saas): pass",
+              "keyboard operability (enterprise-saas): skipped, no api.events declared"
+            ]
+          }
+        ],
+        "warnings": [],
+        "timestamp": "2026-07-12T12:00:04.095Z"
+      }
+    },
+    {
+      "requirementId": "req-07",
+      "requirement": {
+        "id": "req-07",
+        "name": "ds-radio-group",
+        "componentType": "molecule",
+        "purpose": "A labeled group of mutually exclusive options for a single-choice form field.",
+        "properties": [
+          {
+            "name": "name",
+            "type": "string"
+          },
+          {
+            "name": "label",
+            "type": "string"
+          },
+          {
+            "name": "value",
+            "type": "string"
+          }
+        ],
+        "interactions": [
+          "select one option"
+        ],
+        "states": [
+          "default",
+          "selected"
+        ],
+        "contexts": [
+          "consumer-web",
+          "enterprise-saas"
+        ],
+        "needsValidationBehavior": false
+      },
+      "definition": {
+        "name": "ds-radio-group",
+        "version": "1.0.0",
+        "componentType": "molecule",
+        "mutability": "generative",
+        "description": "Labeled group of mutually exclusive options for a single-choice form field.",
+        "usage": {
+          "contexts": [
+            "consumer-web",
+            "enterprise-saas"
+          ]
+        },
+        "api": {
+          "properties": [
+            {
+              "name": "name",
+              "type": "string",
+              "required": true
+            },
+            {
+              "name": "label",
+              "type": "string",
+              "required": false,
+              "default": ""
+            },
+            {
+              "name": "value",
+              "type": "string",
+              "required": false,
+              "default": ""
+            }
+          ],
+          "slots": [
+            {
+              "name": "default",
+              "allowedElements": [],
+              "description": "Radio option text; each option's markup is out of scope for this first registration (see justification)."
+            }
+          ]
+        },
+        "tokens": {
+          "consumes": [
+            "--sem-color-input-border",
+            "--sem-color-action-bg",
+            "--sem-color-focus-ring",
+            "--sem-type-label",
+            "--sem-space-gap-stack",
+            "--ctx-density-scale"
+          ]
+        },
+        "constraints": [
+          {
+            "id": "radio-group-token-wall",
+            "type": "token-usage",
+            "rule": {
+              "allowedTiers": [
+                "sem",
+                "ctx"
+              ],
+              "consumesOnly": true
+            },
+            "failureBehavior": "reject",
+            "rationale": "No primitive references, no raw values."
+          },
+          {
+            "id": "radio-group-a11y",
+            "type": "accessibility",
+            "rule": {
+              "standard": "wcag21aa",
+              "rules": [
+                "color-contrast",
+                "focus-order-semantics",
+                "label"
+              ],
+              "contexts": [
+                "consumer-web",
+                "enterprise-saas"
+              ]
+            },
+            "failureBehavior": "reject",
+            "rationale": "A radio group needs a group-level accessible name (WCAG grouping guidance), independent of each option's own label, hence the explicit `label` rule alongside contrast and focus order."
+          },
+          {
+            "id": "radio-group-api-lock",
+            "type": "api-stability",
+            "rule": {
+              "signatureHash": "<registry>"
+            },
+            "failureBehavior": "reject",
+            "rationale": "First registration establishes the API hash; later drift is a rejection."
+          }
+        ],
+        "evolution": {
+          "gate": {
+            "metric": "interaction-error-rate",
+            "threshold": 0.05,
+            "minSamples": 400,
+            "windowDays": 14
+          }
+        },
+        "provenance": {
+          "author": "ai",
+          "model": "claude-sonnet-5",
+          "createdAt": "2026-07-11T00:00:00Z",
+          "justification": "Design decision: exposed a top-level `label` property intended to back the group's accessible name (via aria-label or aria-labelledby on the host), instead of requiring every caller to wrap the group in their own labelled fieldset. Rejected alternative: omitting a group-level label entirely and relying only on each individual radio option's own label, which was rejected because WCAG grouping guidance calls for one accessible name at the group level in addition to per-option labels, and leaving that entirely to callers would make an unlabeled group the default rather than the exception. Declaring the `label` accessibility rule alongside `color-contrast`/`focus-order-semantics` is the honest way to hold this component to that bar even though this first registration has no dedicated archetype to wire `label` through to an aria attribute yet -- if the generic fallback used for validation can't satisfy that rule, that is a real gap to surface, not one to quietly drop from the constraint set."
+        }
+      },
+      "css": ":host {\n  display: inline-flex;\n  align-items: center;\n  color: var(--sem-color-input-border);\n  background: var(--sem-color-action-bg);\n  color: var(--sem-color-focus-ring);\n  font: var(--sem-type-label);\n  gap: var(--sem-space-gap-stack);\n  --_density-scale-ref: var(--ctx-density-scale);\n}\n",
+      "record": {
+        "candidateName": "ds-radio-group",
+        "passed": false,
+        "outcome": "rejected",
+        "stages": [
+          {
+            "stage": 1,
+            "name": "stage1-gatekeeping",
+            "passed": true,
+            "notes": [
+              "register of new name \"ds-radio-group\" passes through"
+            ]
+          },
+          {
+            "stage": 2,
+            "name": "stage2-schema",
+            "passed": true,
+            "notes": [
+              "definition validates against component-definition.schema.json"
+            ]
+          },
+          {
+            "stage": 3,
+            "name": "stage3-constraints",
+            "passed": true,
+            "notes": [
+              "accessibility: deferred to Stage 4 / M3 (requires rendered instance)",
+              "api-stability: \"ds-radio-group\" not yet registered; hash 1dd28ff84f27528100fdb0c0501ff162e3d0f50c9a8b6df7a755705c23b8ce41 will be stored on registration"
+            ]
+          },
+          {
+            "stage": 4,
+            "name": "stage4-rendered",
+            "passed": false,
+            "notes": [
+              "contrast (consumer-web): 1 declared pair(s) checked, all pass AA",
+              "a11y rule \"focus-order-semantics\" (consumer-web): pass",
+              "a11y rule \"label\" failed in context \"consumer-web\": <ds-radio-group> has no accessible label: no aria-label or aria-labelledby."
+            ]
+          }
+        ],
+        "rejection": {
+          "stage": 4,
+          "module": "stage4-accessibility",
+          "constraintId": "radio-group-a11y",
+          "message": "a11y rule \"label\" failed in context \"consumer-web\": <ds-radio-group> has no accessible label: no aria-label or aria-labelledby.",
+          "sourceSpan": "context:consumer-web"
+        },
+        "warnings": [],
+        "timestamp": "2026-07-12T12:00:04.096Z"
+      }
+    },
+    {
+      "requirementId": "req-08",
+      "requirement": {
+        "id": "req-08",
+        "name": "ds-divider",
+        "componentType": "atom",
+        "purpose": "A thin visual rule separating sections of content, horizontal or vertical.",
+        "properties": [
+          {
+            "name": "orientation",
+            "type": "string",
+            "values": [
+              "horizontal",
+              "vertical"
+            ]
+          }
+        ],
+        "interactions": [
+          "none"
+        ],
+        "states": [
+          "default"
+        ],
+        "contexts": [
+          "consumer-web",
+          "enterprise-saas"
+        ]
+      },
+      "definition": {
+        "name": "ds-divider",
+        "version": "1.0.0",
+        "componentType": "atom",
+        "mutability": "generative",
+        "description": "Thin visual rule separating sections of content, horizontal or vertical.",
+        "usage": {
+          "contexts": [
+            "consumer-web",
+            "enterprise-saas"
+          ]
+        },
+        "api": {
+          "properties": [
+            {
+              "name": "orientation",
+              "type": "string",
+              "required": false,
+              "default": "horizontal",
+              "enum": [
+                "horizontal",
+                "vertical"
+              ]
+            }
+          ]
+        },
+        "tokens": {
+          "consumes": [
+            "--sem-color-input-border",
+            "--sem-space-gap-stack"
+          ]
+        },
+        "constraints": [
+          {
+            "id": "divider-token-wall",
+            "type": "token-usage",
+            "rule": {
+              "allowedTiers": [
+                "sem",
+                "ctx"
+              ],
+              "consumesOnly": true
+            },
+            "failureBehavior": "reject",
+            "rationale": "No primitive references, no raw values."
+          },
+          {
+            "id": "divider-a11y",
+            "type": "accessibility",
+            "rule": {
+              "standard": "wcag21aa",
+              "rules": [
+                "focus-order-semantics"
+              ],
+              "contexts": [
+                "consumer-web",
+                "enterprise-saas"
+              ]
+            },
+            "failureBehavior": "reject",
+            "rationale": "A decorative divider carries no text and is never a focus stop; color-contrast is intentionally not asserted here since --sem-color-input-border has no declared ds.contrastPair (it borders content, it is not paired text/background)."
+          },
+          {
+            "id": "divider-api-lock",
+            "type": "api-stability",
+            "rule": {
+              "signatureHash": "<registry>"
+            },
+            "failureBehavior": "reject",
+            "rationale": "First registration establishes the API hash; later drift is a rejection."
+          }
+        ],
+        "evolution": {
+          "gate": {
+            "metric": "task-completion-rate",
+            "threshold": 0.03,
+            "minSamples": 200,
+            "windowDays": 14
+          }
+        },
+        "provenance": {
+          "author": "ai",
+          "model": "claude-sonnet-5",
+          "createdAt": "2026-07-11T00:00:00Z",
+          "justification": "Design decision: scoped the accessibility constraint to `focus-order-semantics` only rather than also declaring `color-contrast`. Rejected alternative: declaring color-contrast anyway on the reasoning that 'every visual component should have a contrast check', rejected because --sem-color-input-border carries no ds.contrastPair extension in tokens.json (it is a border color, not a text/background pair), so a contrast constraint here would check nothing real -- declaring an unenforceable rule would be decorative in exactly the sense constraint-enforcement-spec.md Section 8 warns against. Also considered adding role='separator' and an aria-orientation binding immediately; rejected as premature for a component with no dedicated archetype yet, deferred to a later additive revision."
+        }
+      },
+      "css": ":host {\n  display: inline-flex;\n  align-items: center;\n  color: var(--sem-color-input-border);\n  gap: var(--sem-space-gap-stack);\n}\n",
+      "record": {
+        "candidateName": "ds-divider",
+        "passed": true,
+        "outcome": "registered",
+        "stages": [
+          {
+            "stage": 1,
+            "name": "stage1-gatekeeping",
+            "passed": true,
+            "notes": [
+              "register of new name \"ds-divider\" passes through"
+            ]
+          },
+          {
+            "stage": 2,
+            "name": "stage2-schema",
+            "passed": true,
+            "notes": [
+              "definition validates against component-definition.schema.json"
+            ]
+          },
+          {
+            "stage": 3,
+            "name": "stage3-constraints",
+            "passed": true,
+            "notes": [
+              "accessibility: deferred to Stage 4 / M3 (requires rendered instance)",
+              "api-stability: \"ds-divider\" not yet registered; hash a6ef8eb86519c8b69d2a535996e3bb128a3062ea80f507502b14502bf54faa7c will be stored on registration"
+            ]
+          },
+          {
+            "stage": 4,
+            "name": "stage4-rendered",
+            "passed": true,
+            "notes": [
+              "a11y rule \"focus-order-semantics\" (consumer-web): pass",
+              "keyboard operability (consumer-web): skipped, no api.events declared",
+              "a11y rule \"focus-order-semantics\" (enterprise-saas): pass",
+              "keyboard operability (enterprise-saas): skipped, no api.events declared"
+            ]
+          }
+        ],
+        "warnings": [],
+        "timestamp": "2026-07-12T12:00:04.098Z"
+      }
+    },
+    {
+      "requirementId": "req-09",
+      "requirement": {
+        "id": "req-09",
+        "name": "ds-stepper",
+        "componentType": "molecule",
+        "purpose": "A horizontal progress-through-steps indicator for multi-step forms, showing each step's completion state.",
+        "properties": [
+          {
+            "name": "activeStep",
+            "type": "number"
+          }
+        ],
+        "interactions": [
+          "none (read-only progress display)"
+        ],
+        "states": [
+          "upcoming",
+          "active",
+          "complete"
+        ],
+        "contexts": [
+          "consumer-web",
+          "enterprise-saas"
+        ]
+      },
+      "definition": {
+        "name": "ds-stepper",
+        "version": "1.0.0",
+        "componentType": "molecule",
+        "mutability": "generative",
+        "description": "Horizontal progress-through-steps indicator for multi-step forms, showing each step's completion state.",
+        "usage": {
+          "contexts": [
+            "consumer-web",
+            "enterprise-saas"
+          ]
+        },
+        "api": {
+          "properties": [
+            {
+              "name": "activeStep",
+              "type": "number",
+              "required": false,
+              "default": 0
+            }
+          ]
+        },
+        "tokens": {
+          "consumes": [
+            "--sem-color-action-bg",
+            "--sem-color-text-secondary",
+            "--sem-color-surface-bg",
+            "--sem-type-label",
+            "--sem-space-gap-related",
+            "--ctx-density-scale"
+          ]
+        },
+        "composition": {
+          "allowedChildren": [
+            "ds-step-item"
+          ]
+        },
+        "constraints": [
+          {
+            "id": "stepper-token-wall",
+            "type": "token-usage",
+            "rule": {
+              "allowedTiers": [
+                "sem",
+                "ctx"
+              ],
+              "consumesOnly": true
+            },
+            "failureBehavior": "reject",
+            "rationale": "No primitive references, no raw values."
+          },
+          {
+            "id": "stepper-a11y",
+            "type": "accessibility",
+            "rule": {
+              "standard": "wcag21aa",
+              "rules": [
+                "color-contrast",
+                "focus-order-semantics"
+              ],
+              "contexts": [
+                "consumer-web",
+                "enterprise-saas"
+              ]
+            },
+            "failureBehavior": "reject",
+            "rationale": "The active step's label color against the surface must clear AA in both contexts; the stepper itself is a read-only display, never a focus stop."
+          },
+          {
+            "id": "stepper-api-lock",
+            "type": "api-stability",
+            "rule": {
+              "signatureHash": "<registry>"
+            },
+            "failureBehavior": "reject",
+            "rationale": "First registration establishes the API hash; later drift is a rejection."
+          },
+          {
+            "id": "stepper-composition",
+            "type": "composition",
+            "rule": {},
+            "failureBehavior": "reject",
+            "rationale": "Composition allowlists are closed-world; every named child must already be registered."
+          }
+        ],
+        "evolution": {
+          "gate": {
+            "metric": "task-completion-rate",
+            "threshold": 0.05,
+            "minSamples": 300,
+            "windowDays": 14
+          }
+        },
+        "provenance": {
+          "author": "ai",
+          "model": "claude-sonnet-5",
+          "createdAt": "2026-07-11T00:00:00Z",
+          "justification": "Design decision: modeled each step as a dedicated child component, `ds-step-item`, carrying its own upcoming/active/complete state, instead of flattening steps into plain slotted text. Rejected alternative: representing steps as a single comma-or-array-shaped string property on ds-stepper itself (e.g. `steps=\"Cart,Shipping,Payment\"`) with no per-step markup at all -- rejected because that approach can't express per-step state independently (a plain string can't carry 'complete' vs 'active' per item) and would push formatting logic into attribute parsing rather than composition, which is exactly the kind of thing this system's composition rules exist to make explicit and checkable instead. The tradeoff acknowledged here: composition.allowedChildren names `ds-step-item`, which is not yet a registered component in this submission -- children must register before the parent that names them (see this repo's own atoms-before-molecules registration order), and this first submission does not include a separate ds-step-item registration, so the closed-world composition check is expected to have something real to reject rather than silently passing on an unverifiable reference."
+        }
+      },
+      "css": ":host {\n  display: inline-flex;\n  align-items: center;\n  background: var(--sem-color-action-bg);\n  color: var(--sem-color-text-secondary);\n  background: var(--sem-color-surface-bg);\n  font: var(--sem-type-label);\n  gap: var(--sem-space-gap-related);\n  --_density-scale-ref: var(--ctx-density-scale);\n}\n",
+      "record": {
+        "candidateName": "ds-stepper",
+        "passed": false,
+        "outcome": "rejected",
+        "stages": [
+          {
+            "stage": 1,
+            "name": "stage1-gatekeeping",
+            "passed": true,
+            "notes": [
+              "register of new name \"ds-stepper\" passes through"
+            ]
+          },
+          {
+            "stage": 2,
+            "name": "stage2-schema",
+            "passed": true,
+            "notes": [
+              "definition validates against component-definition.schema.json"
+            ]
+          },
+          {
+            "stage": 3,
+            "name": "stage3-constraints",
+            "passed": false,
+            "notes": [
+              "accessibility: deferred to Stage 4 / M3 (requires rendered instance)",
+              "api-stability: \"ds-stepper\" not yet registered; hash 094f8d4d78e2287c753822ca0914d7261748fb06b48b5a54c8bf67d56e723f10 will be stored on registration",
+              "slot-content probes deferred to Stage 4 / M3",
+              "composition.allowedChildren references unregistered component \"ds-step-item\". Composition allowlists are closed-world: every referenced name must already be registered."
+            ]
+          }
+        ],
+        "rejection": {
+          "stage": 3,
+          "module": "stage3-constraints",
+          "constraintId": "stepper-composition",
+          "message": "composition.allowedChildren references unregistered component \"ds-step-item\". Composition allowlists are closed-world: every referenced name must already be registered.",
+          "sourceSpan": "composition.allowedChildren[0]"
+        },
+        "warnings": [],
+        "timestamp": "2026-07-12T12:00:04.099Z"
+      }
+    },
+    {
+      "requirementId": "req-10",
+      "requirement": {
+        "id": "req-10",
+        "name": "ds-rating",
+        "componentType": "atom",
+        "purpose": "A read-only star rating display summarizing an average score, e.g. on a product or review card.",
+        "properties": [
+          {
+            "name": "value",
+            "type": "number"
+          },
+          {
+            "name": "max",
+            "type": "number"
+          }
+        ],
+        "interactions": [
+          "none (read-only in v1)"
+        ],
+        "states": [
+          "default"
+        ],
+        "contexts": [
+          "consumer-web",
+          "enterprise-saas"
+        ]
+      },
+      "definition": {
+        "name": "ds-rating",
+        "version": "1.0.0",
+        "componentType": "atom",
+        "mutability": "generative",
+        "description": "Read-only star rating display summarizing an average score, e.g. on a product or review card.",
+        "usage": {
+          "contexts": [
+            "consumer-web",
+            "enterprise-saas"
+          ]
+        },
+        "api": {
+          "properties": [
+            {
+              "name": "value",
+              "type": "number",
+              "required": false,
+              "default": 0
+            },
+            {
+              "name": "max",
+              "type": "number",
+              "required": false,
+              "default": 5
+            }
+          ]
+        },
+        "tokens": {
+          "consumes": [
+            "--sem-color-feedback-success",
+            "--sem-color-surface-bg",
+            "--sem-type-label",
+            "--sem-space-gap-related",
+            "--ctx-density-scale"
+          ]
+        },
+        "constraints": [
+          {
+            "id": "rating-token-wall",
+            "type": "token-usage",
+            "rule": {
+              "allowedTiers": [
+                "sem",
+                "ctx"
+              ],
+              "consumesOnly": true
+            },
+            "failureBehavior": "reject",
+            "rationale": "No primitive references, no raw values."
+          },
+          {
+            "id": "rating-a11y",
+            "type": "accessibility",
+            "rule": {
+              "standard": "wcag21aa",
+              "rules": [
+                "color-contrast",
+                "focus-order-semantics"
+              ],
+              "contexts": [
+                "consumer-web",
+                "enterprise-saas"
+              ]
+            },
+            "failureBehavior": "reject",
+            "rationale": "Filled-star color against the surface must clear AA in both contexts; a read-only rating is never a focus stop."
+          },
+          {
+            "id": "rating-api-lock",
+            "type": "api-stability",
+            "rule": {
+              "signatureHash": "<registry>"
+            },
+            "failureBehavior": "reject",
+            "rationale": "First registration establishes the API hash; later drift is a rejection."
+          }
+        ],
+        "evolution": {
+          "gate": {
+            "metric": "task-completion-rate",
+            "threshold": 0.03,
+            "minSamples": 250,
+            "windowDays": 14
+          }
+        },
+        "provenance": {
+          "author": "ai",
+          "model": "claude-sonnet-5",
+          "createdAt": "2026-07-11T00:00:00Z",
+          "justification": "Design decision: reused --sem-color-feedback-success as the filled-star color, trading a brand-conventional gold/amber star for a token-compliant 'positive signal' color. Rejected alternative: a raw hex literal (#f5b301, a common star-rating amber) for the filled state, which is what a naive implementation would reach for first since no sem token represents 'rating gold'. Rejected outright because a raw color literal in generated CSS is an unconditional rejection under the token wall (constraint-enforcement-spec.md Section 3), not merely a style preference; --sem-color-feedback-success is the closest existing checked token semantically ('this is good'), and this substitution is flagged here for human review rather than treated as a settled design decision."
+        }
+      },
+      "css": ":host {\n  display: inline-flex;\n  align-items: center;\n  color: var(--sem-color-feedback-success);\n  background: var(--sem-color-surface-bg);\n  font: var(--sem-type-label);\n  gap: var(--sem-space-gap-related);\n  --_density-scale-ref: var(--ctx-density-scale);\n}\n",
+      "record": {
+        "candidateName": "ds-rating",
+        "passed": true,
+        "outcome": "registered",
+        "stages": [
+          {
+            "stage": 1,
+            "name": "stage1-gatekeeping",
+            "passed": true,
+            "notes": [
+              "register of new name \"ds-rating\" passes through"
+            ]
+          },
+          {
+            "stage": 2,
+            "name": "stage2-schema",
+            "passed": true,
+            "notes": [
+              "definition validates against component-definition.schema.json"
+            ]
+          },
+          {
+            "stage": 3,
+            "name": "stage3-constraints",
+            "passed": true,
+            "notes": [
+              "accessibility: deferred to Stage 4 / M3 (requires rendered instance)",
+              "api-stability: \"ds-rating\" not yet registered; hash 0e632b276e1f026e7d9bd09364a55b0443bac1af46944df5390b722f73de97a0 will be stored on registration"
+            ]
+          },
+          {
+            "stage": 4,
+            "name": "stage4-rendered",
+            "passed": true,
+            "notes": [
+              "contrast (consumer-web): 4 declared pair(s) checked, all pass AA",
+              "a11y rule \"focus-order-semantics\" (consumer-web): pass",
+              "keyboard operability (consumer-web): skipped, no api.events declared",
+              "contrast (enterprise-saas): 4 declared pair(s) checked, all pass AA",
+              "a11y rule \"focus-order-semantics\" (enterprise-saas): pass",
+              "keyboard operability (enterprise-saas): skipped, no api.events declared"
+            ]
+          }
+        ],
+        "warnings": [],
+        "timestamp": "2026-07-12T12:00:04.100Z"
+      }
+    }
+  ],
+  "poison": {
+    "definition": {
+      "name": "ds-primitive-violation",
+      "version": "1.0.0",
+      "componentType": "atom",
+      "mutability": "adaptive",
+      "description": "Adversarial fixture: otherwise-valid definition whose CSS artifact references a primitive-tier token. Must reject unconditionally regardless of failureBehavior (non-negotiable #1).",
+      "api": {
+        "properties": [
+          {
+            "name": "size",
+            "type": "string",
+            "required": false,
+            "default": "medium",
+            "enum": [
+              "small",
+              "medium",
+              "large"
+            ]
+          }
+        ]
+      },
+      "tokens": {
+        "consumes": [
+          "--sem-color-test-bg",
+          "--sem-color-test-fg",
+          "--ctx-density-scale"
+        ]
+      },
+      "constraints": [
+        {
+          "id": "token-wall",
+          "type": "token-usage",
+          "rule": {
+            "allowedTiers": [
+              "sem",
+              "ctx"
+            ],
+            "consumesOnly": true
+          },
+          "failureBehavior": "reject",
+          "rationale": "The token wall is the contract."
+        }
+      ],
+      "provenance": {
+        "author": "human",
+        "createdAt": "2026-07-11T00:00:00Z"
+      }
+    },
+    "css": ":host {\n  background: var(--sem-color-test-bg);\n  color: var(--sem-color-test-fg);\n  border-color: var(--prim-color-blue-500);\n}\n",
+    "record": {
+      "candidateName": "ds-primitive-violation",
+      "passed": false,
+      "outcome": "rejected",
+      "stages": [
+        {
+          "stage": 1,
+          "name": "stage1-gatekeeping",
+          "passed": true,
+          "notes": [
+            "register of new name \"ds-primitive-violation\" passes through"
+          ]
+        },
+        {
+          "stage": 2,
+          "name": "stage2-schema",
+          "passed": true,
+          "notes": [
+            "definition validates against component-definition.schema.json"
+          ]
+        },
+        {
+          "stage": 3,
+          "name": "stage3-constraints",
+          "passed": false,
+          "notes": [
+            "Primitive-tier token reference \"--prim-color-blue-500\" is forbidden in generated CSS regardless of failureBehavior. Primitives compile away; they never exist as runtime custom properties."
+          ]
+        }
+      ],
+      "rejection": {
+        "stage": 3,
+        "module": "stage3-constraints",
+        "constraintId": "token-wall",
+        "message": "Primitive-tier token reference \"--prim-color-blue-500\" is forbidden in generated CSS regardless of failureBehavior. Primitives compile away; they never exist as runtime custom properties.",
+        "sourceSpan": "css:99:var(--prim-color-blue-500)"
+      },
+      "warnings": [],
+      "timestamp": "2026-07-12T12:00:04.101Z"
+    }
+  },
+  "buttonRevalidation": {
+    "definition": {
+      "name": "ds-button",
+      "version": "2.1.0",
+      "componentType": "atom",
+      "mutability": "adaptive",
+      "description": "Primary action trigger. Structure and API are locked; visual presentation adapts per context through context-tier token bindings only.",
+      "usage": {
+        "contexts": [
+          "consumer-web",
+          "enterprise-saas"
+        ],
+        "designPatterns": [
+          "form-action",
+          "call-to-action"
+        ]
+      },
+      "api": {
+        "properties": [
+          {
+            "name": "variant",
+            "type": "string",
+            "required": false,
+            "default": "primary",
+            "enum": [
+              "primary",
+              "secondary",
+              "danger"
+            ],
+            "description": "Visual weight and semantic intent."
+          },
+          {
+            "name": "size",
+            "type": "string",
+            "required": false,
+            "default": "medium",
+            "enum": [
+              "small",
+              "medium",
+              "large"
+            ]
+          },
+          {
+            "name": "disabled",
+            "type": "boolean",
+            "required": false,
+            "default": false
+          },
+          {
+            "name": "loading",
+            "type": "boolean",
+            "required": false,
+            "default": false,
+            "description": "Shows progress state and blocks interaction without removing the element from the tab order."
+          }
+        ],
+        "slots": [
+          {
+            "name": "default",
+            "allowedElements": [
+              "ds-badge"
+            ],
+            "description": "Button label. Text plus optionally a badge."
+          },
+          {
+            "name": "icon",
+            "allowedElements": [],
+            "description": "Leading icon slot, text/SVG reference only."
+          }
+        ],
+        "events": [
+          {
+            "name": "ds-press",
+            "detailSchema": {
+              "type": "object",
+              "properties": {
+                "originalEvent": {}
+              }
+            },
+            "description": "Fired on activation via pointer or keyboard. Not fired when disabled or loading."
+          }
+        ]
+      },
+      "tokens": {
+        "consumes": [
+          "--sem-color-action-bg",
+          "--sem-color-action-fg",
+          "--sem-color-action-bg-hover",
+          "--sem-color-danger-bg",
+          "--sem-color-danger-fg",
+          "--sem-color-emphasis-bg",
+          "--sem-color-emphasis-fg",
+          "--sem-color-focus-ring",
+          "--sem-radius-interactive",
+          "--sem-space-inset-control",
+          "--sem-type-control",
+          "--ctx-density-scale",
+          "--ctx-motion-duration"
+        ]
+      },
+      "variants": [
+        {
+          "name": "standard",
+          "status": "incumbent",
+          "contextPreference": [
+            "consumer-web",
+            "enterprise-saas"
+          ],
+          "description": "Baseline presentation in both contexts."
+        },
+        {
+          "name": "compact-affordance",
+          "status": "challenger",
+          "contextPreference": [
+            "enterprise-saas"
+          ],
+          "description": "AI-proposed variant: tighter inset and reduced motion for dense enterprise surfaces, hypothesis is lower time-to-interaction in toolbar placements."
+        }
+      ],
+      "composition": {
+        "allowedParents": [
+          "ds-form-field",
+          "ds-search-bar"
+        ],
+        "maxInstancesPerParent": 3
+      },
+      "constraints": [
+        {
+          "id": "btn-token-wall",
+          "type": "token-usage",
+          "rule": {
+            "allowedTiers": [
+              "sem",
+              "ctx"
+            ],
+            "consumesOnly": true
+          },
+          "failureBehavior": "reject",
+          "rationale": "No primitive references, no raw values. The token wall is the contract."
+        },
+        {
+          "id": "btn-a11y",
+          "type": "accessibility",
+          "rule": {
+            "standard": "wcag21aa",
+            "rules": [
+              "color-contrast",
+              "button-name",
+              "focus-order-semantics"
+            ],
+            "contexts": [
+              "consumer-web",
+              "enterprise-saas"
+            ]
+          },
+          "failureBehavior": "reject",
+          "rationale": "Contrast must pass under both context token resolutions independently."
+        },
+        {
+          "id": "btn-api-lock",
+          "type": "api-stability",
+          "rule": {
+            "signatureHash": "<registry>"
+          },
+          "failureBehavior": "reject",
+          "rationale": "Adaptive class: API drift is structural drift."
+        },
+        {
+          "id": "btn-composition",
+          "type": "composition",
+          "rule": {
+            "enforceSlotContent": true
+          },
+          "failureBehavior": "reject",
+          "rationale": "Slot allowlists are load-bearing; a button that accepts arbitrary children is a layout component in denial."
+        },
+        {
+          "id": "btn-perf",
+          "type": "performance",
+          "rule": {
+            "renderMs": 16,
+            "interactionMs": 100,
+            "bundleKb": 6
+          },
+          "failureBehavior": "flag",
+          "rationale": "Headless perf numbers are directional; breach goes to review rather than blocking."
+        }
+      ],
+      "evolution": {
+        "gate": {
+          "metric": "time-to-interaction",
+          "threshold": 0.05,
+          "minSamples": 500,
+          "windowDays": 14
+        }
+      },
+      "performanceBudget": {
+        "renderMs": 16,
+        "interactionMs": 100,
+        "bundleKb": 6
+      },
+      "provenance": {
+        "author": "human",
+        "createdAt": "2026-07-11T00:00:00Z",
+        "approvedBy": "michael"
+      }
+    },
+    "record": {
+      "candidateName": "ds-button",
+      "passed": true,
+      "outcome": "registered",
+      "stages": [
+        {
+          "stage": 2,
+          "name": "stage2-schema",
+          "passed": true,
+          "notes": [
+            "definition validates against component-definition.schema.json"
+          ]
+        },
+        {
+          "stage": 3,
+          "name": "stage3-constraints",
+          "passed": true,
+          "notes": [
+            "accessibility: deferred to Stage 4 / M3 (requires rendered instance)",
+            "api-stability: signature hash ff17993a1a9c6fd122d789a38f5e58e6b7b6a7aac8b3cc250db26853aac614b1 matches expected",
+            "slot-content probes deferred to Stage 4 / M3",
+            "performance: deferred to Stage 4 / M3 (requires rendered instance)"
+          ]
+        },
+        {
+          "stage": 4,
+          "name": "stage4-rendered",
+          "passed": true,
+          "notes": [
+            "contrast (consumer-web): 3 declared pair(s) checked, all pass AA",
+            "a11y rule \"button-name\" (consumer-web): pass",
+            "a11y rule \"focus-order-semantics\" (consumer-web): pass",
+            "keyboard operability (consumer-web): fires when enabled, suppressed when disabled",
+            "perf (consumer-web): render=0.09ms interaction=0.03ms bundle=5.96kb (headless numbers are directional, not gospel)",
+            "slot probe (consumer-web, slot \"default\"): allowed content clean, disallowed content correctly rejected",
+            "slot probe (consumer-web, slot \"icon\"): allowed content clean, disallowed content correctly rejected",
+            "contrast (enterprise-saas): 3 declared pair(s) checked, all pass AA",
+            "a11y rule \"button-name\" (enterprise-saas): pass",
+            "a11y rule \"focus-order-semantics\" (enterprise-saas): pass",
+            "keyboard operability (enterprise-saas): fires when enabled, suppressed when disabled",
+            "perf (enterprise-saas): render=0.09ms interaction=0.03ms bundle=5.96kb (headless numbers are directional, not gospel)",
+            "slot probe (enterprise-saas, slot \"default\"): allowed content clean, disallowed content correctly rejected",
+            "slot probe (enterprise-saas, slot \"icon\"): allowed content clean, disallowed content correctly rejected"
+          ]
+        }
+      ],
+      "warnings": [],
+      "timestamp": "2026-07-12T12:00:04.144Z"
+    }
+  }
+}

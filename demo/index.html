@@ -19,6 +19,18 @@
       align-items: center;
       justify-content: center;
     }
+    section.step {
+      margin-top: 1rem;
+      padding: var(--sem-space-inset-container);
+      border: 1px solid var(--sem-color-input-border);
+      border-radius: var(--sem-radius-container);
+    }
+    .record { font: var(--sem-type-caption); }
+    .rejection { color: var(--sem-color-feedback-error); }
+    .justification { font: var(--sem-type-caption); color: var(--sem-color-text-secondary); }
+    textarea#gen-json-preview { width: 100%; min-height: 10rem; font-family: monospace; }
+    pre { white-space: pre-wrap; background: var(--sem-color-surface-bg); padding: var(--sem-space-inset-control); }
+    .ds-preview { display: inline-flex; align-items: center; justify-content: center; padding: var(--sem-space-inset-control, 0.5em); }
   </style>
 </head>
 <body>
@@ -132,6 +144,66 @@
     Last ds-validate: <span id="validate-log">(none)</span>
   </p>
 
+  <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--sem-color-input-border);" />
+
+  <h2>Step 2: generate a component (M5)</h2>
+  <p style="font: var(--sem-type-caption); color: var(--sem-color-text-secondary);">
+    Records below are produced by the REAL pipeline at build time
+    (<code>npm run build:demo-data</code>, from
+    <code>test/generation/requirements</code> +
+    <code>test/generation/attempts</code>) and replayed here — this section
+    reads the recorded validation record, it does not re-run the pipeline in
+    your browser.
+  </p>
+  <section class="step">
+    <label for="gen-requirement">Requirement:</label>
+    <select id="gen-requirement"></select>
+    <p style="font: var(--sem-type-caption);">Structured requirement (editable preview, not resubmitted — the recorded attempt is what actually ran through the pipeline):</p>
+    <textarea id="gen-json-preview"></textarea>
+    <p>
+      <ds-button id="gen-submit" variant="primary" size="small">Generate</ds-button>
+    </p>
+    <div id="gen-output"></div>
+    <h4>In-page registry mirror</h4>
+    <ul id="gen-registry-mirror"></ul>
+  </section>
+
+  <h2>Step 3: poison the pipeline (M5)</h2>
+  <p style="font: var(--sem-type-caption); color: var(--sem-color-text-secondary);">
+    Submits <code>test/adversarial/primitive-token-reference.json</code> +
+    <code>.css</code> — a definition whose generated CSS references
+    <code>--prim-color-blue-500</code>. Real record from the build step.
+  </p>
+  <section class="step">
+    <p>
+      <ds-button id="poison-submit" variant="danger" size="small">Submit poisoned definition</ds-button>
+    </p>
+    <div id="poison-output"></div>
+  </section>
+
+  <h2>Step 4: run the gate (M5)</h2>
+  <p style="font: var(--sem-type-caption); color: var(--sem-color-text-secondary);">
+    Synthetic telemetry (<code>telemetry/synthetic.ts</code>) and gate
+    evaluation (<code>telemetry/gate.ts</code>) run LIVE, right here in the
+    browser, seeded and deterministic. Promotion re-runs Stages 2-4 before
+    the registry flips; the browser replays a precomputed real revalidation
+    record from the build step rather than re-running node-side pipeline
+    stages itself (labeled below). One incumbent per component per context,
+    always — the status board reflects that live.
+  </p>
+  <section class="step">
+    <p>
+      <ds-button id="gate-run-win" variant="primary" size="small">Run gate (winning seed)</ds-button>
+      <ds-button id="gate-run-lose" variant="secondary" size="small">Run gate (losing seed)</ds-button>
+    </p>
+    <div id="gate-result"></div>
+    <div id="gate-revalidation"></div>
+    <h4>ds-button variant status</h4>
+    <ul id="gate-status-board"></ul>
+  </section>
+
+  <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--sem-color-input-border);" />
+
   <script type="module" src="../components/ds-label.js"></script>
   <script type="module" src="../components/ds-badge.js"></script>
   <script type="module" src="../components/ds-text-input.js"></script>
@@ -139,6 +211,7 @@
   <script type="module" src="../components/ds-form-field.js"></script>
   <script type="module" src="../components/ds-search-bar.js"></script>
   <script type="module" src="../components/ds-button.js"></script>
+  <script type="module" src="./demo.ts"></script>
 
   <script>
     const root = document.documentElement;

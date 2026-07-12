@@ -119,13 +119,43 @@ function buildEnvironment(context: string): RenderEnv {
  */
 function evaluateComponentModule(source: string, env: RenderEnv): void {
   const body = source.replace(/\nexport default \w+;\s*$/, "\n");
-  const fn = new Function("window", "document", "customElements", "HTMLElement", "CustomEvent", "console", "queueMicrotask", body);
+  // getComputedStyle is included alongside the other DOM globals archetypes
+  // rely on being ambient (e.g. ds-form-field's live --ctx-validation-mode
+  // read). Under vitest's "happy-dom" test environment these already exist
+  // on globalThis (the test environment registers them there), so this was
+  // masked in CI; running the same generated source outside that test
+  // environment (plain node/tsx, e.g. demo/build-demo-data.ts) throws inside
+  // any archetype that calls a bare `getComputedStyle(...)`, silently
+  // swallowing the rest of that listener's work. Passing it explicitly here
+  // makes Stage 4 environment-independent instead of accidentally coupled to
+  // vitest's global pollution.
+  const fn = new Function(
+    "window",
+    "document",
+    "customElements",
+    "HTMLElement",
+    "CustomEvent",
+    "console",
+    "queueMicrotask",
+    "getComputedStyle",
+    body
+  );
   const win = env.window as unknown as {
     customElements: CustomElementRegistry;
     HTMLElement: typeof HTMLElement;
     CustomEvent: typeof CustomEvent;
+    getComputedStyle: (element: Element) => CSSStyleDeclaration;
   };
-  fn(env.window, env.document, win.customElements, win.HTMLElement, win.CustomEvent, capturingConsole(env.consoleErrors), queueMicrotask);
+  fn(
+    env.window,
+    env.document,
+    win.customElements,
+    win.HTMLElement,
+    win.CustomEvent,
+    capturingConsole(env.consoleErrors),
+    queueMicrotask,
+    win.getComputedStyle.bind(win)
+  );
 }
 
 function instantiate(env: RenderEnv, definition: ComponentDefinition): Element {

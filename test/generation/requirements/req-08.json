@@ -1,0 +1,12 @@
+{
+  "id": "req-08",
+  "name": "ds-divider",
+  "componentType": "atom",
+  "purpose": "A thin visual rule separating sections of content, horizontal or vertical.",
+  "properties": [
+    { "name": "orientation", "type": "string", "values": ["horizontal", "vertical"] }
+  ],
+  "interactions": ["none"],
+  "states": ["default"],
+  "contexts": ["consumer-web", "enterprise-saas"]
+}

@@ -1,0 +1,67 @@
+{
+  "name": "ds-tooltip",
+  "version": "1.0.0",
+  "componentType": "atom",
+  "mutability": "generative",
+  "description": "Short, dark-surfaced popover with explanatory text, anchored to a trigger element.",
+
+  "usage": {
+    "contexts": ["consumer-web", "enterprise-saas"]
+  },
+
+  "api": {
+    "properties": [
+      { "name": "text", "type": "string", "required": true },
+      { "name": "placement", "type": "string", "required": false, "default": "top", "enum": ["top", "bottom", "left", "right"] }
+    ],
+    "slots": [
+      { "name": "default", "allowedElements": [], "description": "Overrides `text` with richer slotted content when present." }
+    ]
+  },
+
+  "tokens": {
+    "consumes": [
+      "--sem-color-text-primary",
+      "--sem-color-surface-bg",
+      "--sem-type-caption",
+      "--sem-space-inset-control",
+      "--sem-radius-interactive",
+      "--prim-color-gray-900"
+    ]
+  },
+
+  "constraints": [
+    {
+      "id": "tooltip-token-wall",
+      "type": "token-usage",
+      "rule": { "allowedTiers": ["sem", "ctx"], "consumesOnly": true },
+      "failureBehavior": "reject",
+      "rationale": "No primitive references, no raw values."
+    },
+    {
+      "id": "tooltip-a11y",
+      "type": "accessibility",
+      "rule": { "standard": "wcag21aa", "rules": ["color-contrast", "focus-order-semantics"], "contexts": ["consumer-web", "enterprise-saas"] },
+      "failureBehavior": "reject",
+      "rationale": "Tooltip text must clear AA contrast against its surface in both contexts independently."
+    },
+    {
+      "id": "tooltip-api-lock",
+      "type": "api-stability",
+      "rule": { "signatureHash": "<registry>" },
+      "failureBehavior": "reject",
+      "rationale": "First registration establishes the API hash; later drift is a rejection."
+    }
+  ],
+
+  "evolution": {
+    "gate": { "metric": "interaction-error-rate", "threshold": 0.1, "minSamples": 300, "windowDays": 14 }
+  },
+
+  "provenance": {
+    "author": "ai",
+    "model": "claude-sonnet-5",
+    "createdAt": "2026-07-11T00:00:00Z",
+    "justification": "Design decision: the requirement calls for a conventionally dark tooltip surface with light text, but no sem-tier token in tokens.json represents an 'inverted' dark surface — every declared surface token (--sem-color-surface-bg) resolves light in both contexts, and no sem color pairs a dark background with light text as a checked ds.contrastPair. Rejected alternative: using --sem-color-text-primary (near-black) as the tooltip's own foreground against --sem-color-surface-bg, which would produce a light tooltip indistinguishable from the page background it floats over -- rejected as visually non-functional for a popover that must read as elevated content. In the absence of a semantic 'inverted surface' token, reached for --prim-color-gray-900 directly as the dark background. This is flagged here deliberately as a likely token-wall violation rather than silently worked around: it names a real gap in tokens.json (no dark/inverted surface token exists yet) that a human should decide how to fill, rather than an AI definition quietly routing around the wall."
+  }
+}
