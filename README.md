@@ -4,20 +4,22 @@ A proof of concept for a design system an AI can *be*, not merely read.
 
 The system generates, adapts, and evolves Web Components under machine-enforceable constraints, because no human author is guaranteed present at generation time. The differentiator is the enforcement pipeline: **if a rule cannot be executed by the validator, it does not exist in this system.**
 
-## The short version (for everyone)
+## What this is, in plain terms
 
-Design systems today are rulebooks written for humans: use these colors, keep text readable, don't misuse components. Every rule works because a *person* enforces it — a designer follows it, a reviewer catches mistakes. That breaks the moment an AI is generating the UI and no human is in the room.
+A design system is the shared set of building blocks a company uses for its screens — the standard button, the standard form field, the approved colors and spacing — so everything looks and behaves consistently. Normally that consistency depends on people: designers write the guidelines, developers follow them, and reviewers catch the mistakes.
 
-This POC makes the rules enforce themselves. It's four machines bolted together:
+This project is an experiment for a different situation: an AI is writing the UI, and there may be no person reviewing its work. So instead of writing the guidelines as documentation and hoping they get followed, the guidelines here are automated checks. A component that breaks a rule doesn't get a comment in code review — it gets rejected by the build, with an error saying which rule it broke and where.
 
-1. **A vocabulary** — components can't say "make it `#3b82f6` blue," only "make it *action-colored*." What that means is decided per context, which is why the same button renders friendly-and-round on a consumer site and dense-and-sharp in an enterprise app with zero changed code.
-2. **A bouncer** — five checkpoints every component must pass before it's allowed to exist. Fail one and it's rejected with a receipt naming exactly what it did wrong.
-3. **A factory** — turns a component description into working code, the same way every time.
-4. **A tournament** — new variants ship by measurably beating the current champion, or they're automatically retired. No ties, no forty button variants accumulating forever.
+In practice that means:
 
-**Why care?** Everyone is about to point AI at their codebase and say "build the UI." What stops it from producing garbage? Today: human review (doesn't scale) or prompt guidelines (hope, not enforcement). This is an existence proof of a third answer: make the guardrails executable. The AI is free inside the walls; the walls hold no matter what it generates.
+- **Components never contain hardcoded colors, sizes, or fonts.** They refer to named choices like "the action color" or "the standard control padding," and the actual values come from a settings file. Change the settings, and every component updates — which is also how the same button can look casual and spacious in a consumer app but compact and businesslike in an enterprise tool, without two versions of the button existing.
+- **Every component is checked before it can be used.** Is it built correctly? Does it only use the approved colors and spacing? Is the text readable? Does it work with a keyboard? Any failure blocks the component entirely and produces a specific error message.
+- **Component code is generated from a written spec**, the same way every time, rather than typed by hand.
+- **Competing versions are settled by data.** If someone (or some AI) proposes a new version of a component, it only replaces the current one by measurably performing better with users — fewer errors, faster interactions. If it doesn't clear that bar within a set time window, it's automatically retired. Alternatives can't quietly pile up.
 
-**Did it work?** The pipeline rejected 3 of 10 components the AI generated in good faith — each for a real, named reason. A pipeline that passes everything proves nothing; the rejections are the proof. Context adaptation required zero per-context component code, and the variant tournament promoted a winner and killed a loser with the registry structurally unable to hold two champions. Humans authored the constraints; the machine holds them. That asymmetry is the thesis.
+**Why this matters:** teams everywhere are starting to let AI write their user interfaces. The open question is what stops it from producing inconsistent, inaccessible, or broken screens. Today the answers are "a human reviews everything" (too slow to keep up) or "we told the AI the rules in its instructions" (nothing guarantees it listens). This project demonstrates a third option: rules that are enforced by software, so they hold no matter what the AI produces.
+
+**Did it work?** In testing, the AI wrote ten component specs doing its honest best — and the checks rejected three of them, each with a specific, legitimate reason (one tried to use a raw color value because no approved color fit its need). That's the meaningful result: checks that never reject anything aren't checks. Meanwhile, one codebase served both the consumer and enterprise looks with zero duplicated component code, and the version-replacement process promoted a measurably better variant and retired a worse one, automatically. People wrote the rules; the software enforces them. That division of labor is the whole idea.
 
 ## Status
 
