@@ -34,7 +34,10 @@ function buildCss(definition: ComponentDefinition): string {
   lines.push("  display: inline-flex;");
   lines.push("  align-items: center;");
   if (consumes.has("--sem-space-gap-related")) lines.push("  gap: var(--sem-space-gap-related);");
-  if (consumes.has("--ctx-density-scale")) lines.push("  transform: scale(var(--ctx-density-scale));");
+  // Density is applied once, by the token pipeline's calc()-scaled dimension
+  // tokens — a host transform would densify twice (see button.ts). Inert
+  // passthrough keeps declared consumption checkable.
+  if (consumes.has("--ctx-density-scale")) lines.push("  --_density-scale-ref: var(--ctx-density-scale);");
   lines.push("}");
 
   lines.push("");

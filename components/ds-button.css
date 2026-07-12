@@ -12,8 +12,8 @@
   background: var(--sem-color-action-bg);
   color: var(--sem-color-action-fg);
   transition-duration: var(--ctx-motion-duration);
-  transition-property: background-color, transform, opacity;
-  transform: scale(var(--ctx-density-scale));
+  transition-property: background-color, color, opacity;
+  --_density-scale-ref: var(--ctx-density-scale);
 }
 
 button {

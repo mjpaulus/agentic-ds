@@ -3,7 +3,7 @@
   display: inline-flex;
   align-items: center;
   gap: var(--sem-space-gap-related);
-  transform: scale(var(--ctx-density-scale));
+  --_density-scale-ref: var(--ctx-density-scale);
 }
 
 [part="input"] {

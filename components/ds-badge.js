@@ -3,7 +3,7 @@
 // Archetype: badge. Regenerate via `npm run build:components`.
 
 const TEMPLATE = "<slot></slot>";
-const STYLE = ":host {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: calc(var(--sem-space-inset-control) / 2) var(--sem-space-inset-control);\n  border-radius: var(--sem-radius-interactive);\n  font: var(--sem-type-caption);\n  background: var(--sem-color-emphasis-bg);\n  color: var(--sem-color-emphasis-fg);\n  transform: scale(var(--ctx-density-scale));\n}\n\n:host([variant=\"success\"]) {\n  background: var(--sem-color-surface-bg);\n  color: var(--sem-color-feedback-success);\n}\n\n:host([variant=\"error\"]) {\n  background: var(--sem-color-surface-bg);\n  color: var(--sem-color-feedback-error);\n}\n";
+const STYLE = ":host {\n  display: inline-flex;\n  align-items: center;\n  justify-content: center;\n  padding: calc(var(--sem-space-inset-control) / 2) var(--sem-space-inset-control);\n  border-radius: var(--sem-radius-interactive);\n  font: var(--sem-type-caption);\n  background: var(--sem-color-emphasis-bg);\n  color: var(--sem-color-emphasis-fg);\n  --_density-scale-ref: var(--ctx-density-scale);\n}\n\n:host([variant=\"success\"]) {\n  background: var(--sem-color-surface-bg);\n  color: var(--sem-color-feedback-success);\n}\n\n:host([variant=\"error\"]) {\n  background: var(--sem-color-surface-bg);\n  color: var(--sem-color-feedback-error);\n}\n";
 const ELEMENT_NAME = "ds-badge";
 
 const PROP_SPECS = {

@@ -1,7 +1,7 @@
 /* GENERATED — do not hand-edit; regenerate through the pipeline. */
 :host {
   display: inline-block;
-  transform: scale(var(--ctx-density-scale));
+  --_density-scale-ref: var(--ctx-density-scale);
 }
 
 [part="input"] {
