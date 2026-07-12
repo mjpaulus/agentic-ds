@@ -34,7 +34,10 @@ function buildCss(definition: ComponentDefinition): string {
   if (consumes.has("--sem-type-caption")) lines.push("  font: var(--sem-type-caption);");
   if (consumes.has("--sem-color-emphasis-bg")) lines.push("  background: var(--sem-color-emphasis-bg);");
   if (consumes.has("--sem-color-emphasis-fg")) lines.push("  color: var(--sem-color-emphasis-fg);");
-  if (consumes.has("--ctx-density-scale")) lines.push("  transform: scale(var(--ctx-density-scale));");
+  // Density is applied once, by the token pipeline's calc()-scaled dimension
+  // tokens — a host transform would densify twice (see button.ts). Inert
+  // passthrough keeps declared consumption checkable.
+  if (consumes.has("--ctx-density-scale")) lines.push("  --_density-scale-ref: var(--ctx-density-scale);");
   lines.push("}");
 
   if (consumes.has("--sem-color-surface-bg") && consumes.has("--sem-color-feedback-success")) {

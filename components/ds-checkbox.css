@@ -2,7 +2,7 @@
 :host {
   display: inline-flex;
   align-items: center;
-  transform: scale(var(--ctx-density-scale));
+  --_density-scale-ref: var(--ctx-density-scale);
 }
 
 [part="input"] {

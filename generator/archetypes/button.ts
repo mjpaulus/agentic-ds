@@ -76,10 +76,17 @@ function buildCss(definition: ComponentDefinition): string {
   }
   if (consumes.has("--ctx-motion-duration")) {
     lines.push("  transition-duration: var(--ctx-motion-duration);");
-    lines.push("  transition-property: background-color, transform, opacity;");
+    lines.push("  transition-property: background-color, color, opacity;");
   }
   if (consumes.has("--ctx-density-scale")) {
-    lines.push("  transform: scale(var(--ctx-density-scale));");
+    // Density is a single knob applied once, by the token pipeline: every
+    // densityScaled dimension token already emits as
+    // calc(<value> * var(--ctx-density-scale)) (tokens/emit.ts). A host
+    // transform on top of that would densify twice, shrink text below its
+    // token-specified size, and blur rendering. The inert passthrough keeps
+    // the definition's declared consumption real and checkable (same
+    // pattern as generation/synthesize.ts) without re-applying the scale.
+    lines.push("  --_density-scale-ref: var(--ctx-density-scale);");
   }
   lines.push("}");
 
