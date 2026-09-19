@@ -1,6 +1,11 @@
+// @vitest-environment node
+//
 // Real-call smoke test. Skipped unless TYPESAFE_API_KEY is set — CI runs
 // without a key and stays green; a developer with a key can run
 // `TYPESAFE_API_KEY=... npm run test:m6` to exercise the live backend.
+// Node environment is required: under the suite's default happy-dom the SDK
+// sees a `window` and refuses to construct a client that would expose the
+// key in a browser — the safety behavior we rely on, not a bug to bypass.
 import { describe, expect, it } from "vitest";
 import { TypeSafeAdaptationDecider } from "./backends/typesafe.js";
 

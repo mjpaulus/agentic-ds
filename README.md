@@ -59,7 +59,7 @@ A fast typed-decision call to TypeSafe's `jev-1.13.0` model reads a plain-Englis
 
 Jev sits behind an `AdaptationDecider` seam (`adaptation/decider.ts`), the same injected-backend pattern `telemetry/evolution.ts` and `generation/generate-definition.ts` already use. Two backends implement it:
 
-- **Recorded** (`adaptation/backends/recorded.ts`) — the default. Answers come from `adaptation/fixtures/recorded-answers.json`, a hand-authored, internally-consistent set of 6 example tasks, honestly labeled `"provenance": "synthetic-hand-authored"`. The demo's mode badge always says so.
+- **Recorded** (`adaptation/backends/recorded.ts`) — the default without a key. Answers come from `adaptation/fixtures/recorded-answers.json`: real `jev-1.13.0` responses for 6 example tasks, captured by `npm run adaptation:record` and labeled `"provenance": "recorded-from-jev"` with the model version. The demo's mode badge shows which mode and provenance is in play. Unknown tasks fall back to the nearest fixture by keyword overlap, or to "keep everything" — typed-in tasks only get genuine decisions in live mode.
 - **Live** (`adaptation/backends/typesafe.ts`) — used automatically when `TYPESAFE_API_KEY` is set. Calls the real `jev-1.13.0` model via `@typesafe-ai/sdk`. The key is read server-side only, in `vite.config.ts`'s `/api/adapt` middleware; it is never sent to the browser.
 
 If Jev is unreachable in either mode, the decision falls back to "keep the current context, no component plan, mode unavailable" — Jev is middleware, not load-bearing, and the page keeps working.

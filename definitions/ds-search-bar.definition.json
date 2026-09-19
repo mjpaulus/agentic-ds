@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "componentType": "molecule",
   "mutability": "adaptive",
-  "description": "Composite search control: an internal text field and a trigger button, rendered as the component's own shadow parts. Fires ds-search on button press or Enter.",
+  "description": "Search box where the user types a query to find matching items. Composite control: an internal text field and a trigger button rendered as the component's own shadow parts; fires ds-search on button press or Enter.",
 
   "usage": {
     "contexts": ["consumer-web", "enterprise-saas"],

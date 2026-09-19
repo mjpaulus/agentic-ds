@@ -10,7 +10,7 @@ import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { IncomingMessage } from "node:http";
 import type { Plugin, ViteDevServer } from "vite";
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import { ADAPTATION_MODEL, CONTRACT_VERSION, THRESHOLDS } from "./adaptation/contract.js";
 import { decideWithFallback } from "./adaptation/decider.js";
 import { RecordedAdaptationDecider, type FixtureFile } from "./adaptation/backends/recorded.js";
@@ -21,6 +21,14 @@ import type { Registry } from "./registry/registry.js";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const FIXTURE_PATH = resolve(__dirname, "adaptation/fixtures/recorded-answers.json");
+
+// A gitignored .env.local is the supported place for the key. It is
+// loaded into the server process only; Vite exposes nothing to the client
+// without a VITE_ prefix, and the middleware never forwards it.
+const localEnv = loadEnv("development", __dirname, "");
+if (!process.env.TYPESAFE_API_KEY && localEnv.TYPESAFE_API_KEY) {
+  process.env.TYPESAFE_API_KEY = localEnv.TYPESAFE_API_KEY;
+}
 
 function loadFixtures(): FixtureFile {
   return JSON.parse(readFileSync(FIXTURE_PATH, "utf-8")) as FixtureFile;

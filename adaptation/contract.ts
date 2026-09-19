@@ -120,25 +120,37 @@ export function buildQuestions(catalog: CatalogEntry[]): QuestionMap {
         false: "The task is something a trained or repeat user would do without guidance.",
       },
     },
+    // Wording chosen by A/B against live jev-1.13.0 (2026-09-19): "does the
+    // task require an element none provides" scored 0.59–0.66 on every
+    // non-trivial task and could not separate a Kanban board (0.66) from
+    // invoice reconciliation (0.59). Asking about the task's CENTRAL element
+    // separates cleanly: board 0.93 / dashboard 0.88 / invoices 0.86 versus
+    // newsletter 0.10 / delete 0.25 / catalog search 0.35.
     gap: {
       type: "noul",
       instructions:
-        "Does completing `task` require an interface element that none of `available_components` provides?",
+        "Is the central interface element for `task` — the one thing the user must see or operate to make progress — missing from `available_components`?",
       criteria: {
-        true: "No combination of `available_components` could present or collect what `task` needs.",
-        false: "One or more of `available_components` can present or collect what `task` needs.",
+        true: "The task's central element (for example a board, a data table, a chart, a calendar, a map, a file uploader) is not in `available_components`.",
+        false: "The task's central element is one of `available_components`, such as a text field, button, checkbox, label, badge, form field, or search box.",
       },
     },
   };
 
+  // "Should the screen include" rather than "does the task require": jev-1.13
+  // reads "require" literally (you can search a catalog without a search box,
+  // so ds-search-bar scored 0.42–0.50 on a search task). Asking what a
+  // designer would put on the screen is the snap judgment we actually want;
+  // A/B on 2026-09-19 moved search-bar to 0.79 on that task and sharpened
+  // every other row.
   for (const entry of catalog) {
     const purpose = entry.purpose.replace(/\.$/, "").toLowerCase();
     questions[`${COMPONENT_QUESTION_PREFIX}${entry.name}`] = {
       type: "noul",
-      instructions: `Does completing \`task\` require a "${entry.name}" (${purpose})?`,
+      instructions: `Should the screen for \`task\` include a "${entry.name}" (${purpose})?`,
       criteria: {
-        true: `Completing \`task\` needs a ${purpose}.`,
-        false: `Completing \`task\` has no use for a ${purpose}.`,
+        true: `A person designing the screen for \`task\` would put a ${purpose} on it.`,
+        false: `A ${purpose} would be out of place or unnecessary on the screen for \`task\`.`,
       },
     };
   }

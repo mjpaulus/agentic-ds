@@ -32,45 +32,57 @@ interface Expectation {
   componentsInclude?: string[];
 }
 
+// Expectations are what jev-1.13.0 actually answered on 2026-09-19 (see the
+// fixture file's provenance), resolved through THRESHOLDS. If a re-record
+// after a contract or model change shifts these, that is the contract
+// changing — update deliberately, don't loosen the thresholds to fit.
 const TABLE: Expectation[] = [
   {
     task: "Reconcile 40 vendor invoices against POs before Friday's audit",
     currentContext: "consumer-web",
     contextAction: "apply",
     destructive: false,
-    componentsInclude: ["ds-form-field", "ds-text-input", "ds-checkbox", "ds-button"],
+    // The registry has no data table, so the model reports the task's central element missing.
+    gapDetected: true,
+    componentsInclude: ["ds-form-field", "ds-checkbox", "ds-button"],
   },
   {
     task: "Sign me up for the newsletter",
     currentContext: "enterprise-saas",
     contextAction: "apply",
     destructive: false,
-    componentsInclude: ["ds-text-input", "ds-button", "ds-label"],
+    gapDetected: false,
+    componentsInclude: ["ds-text-input", "ds-button", "ds-label", "ds-form-field"],
   },
   {
     task: "Delete my account and all my data",
     currentContext: "enterprise-saas",
-    contextAction: "suggest",
+    contextAction: "apply",
     destructive: true,
+    gapDetected: false,
     componentsInclude: ["ds-button"],
   },
   {
     task: "Search the component catalog for badge variants",
     currentContext: "consumer-web",
-    contextAction: "suggest",
+    contextAction: "apply",
     destructive: false,
+    gapDetected: false,
     componentsInclude: ["ds-search-bar"],
   },
   {
     task: "Set up a Kanban board for my team",
     currentContext: "consumer-web",
-    contextAction: "suggest",
+    contextAction: "apply",
     gapDetected: true,
   },
   {
+    // Hysteresis: the model picks enterprise-saas at full confidence, and
+    // that is already the current context, so nothing changes.
     task: "Review last month's analytics dashboard",
-    currentContext: "consumer-web",
+    currentContext: "enterprise-saas",
     contextAction: "keep",
+    gapDetected: true,
   },
 ];
 
@@ -92,8 +104,9 @@ describe("recorded fixtures resolve to their documented decisions", () => {
 });
 
 describe("fixture file integrity", () => {
-  it("has provenance 'synthetic-hand-authored'", () => {
-    expect(file.provenance).toBe("synthetic-hand-authored");
+  it("is real recorded model output, pinned to the contract's model", () => {
+    expect(file.provenance).toBe("recorded-from-jev");
+    expect(file.model).toBe("jev-1.13.0");
   });
 
   it("every fixture's context probabilities sum to ~1", () => {
@@ -103,9 +116,9 @@ describe("fixture file integrity", () => {
     }
   });
 
-  it("every fixture entry is marked synthetic-hand-authored", () => {
+  it("every fixture entry is marked recorded-from-jev", () => {
     for (const [task, entry] of Object.entries(file.fixtures)) {
-      expect(entry.provenance, task).toBe("synthetic-hand-authored");
+      expect(entry.provenance, task).toBe("recorded-from-jev");
     }
   });
 });

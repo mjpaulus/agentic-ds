@@ -386,7 +386,7 @@ function renderWorkspace(container: HTMLElement, decision: AdaptationDecision): 
   if (has("ds-button")) {
     const wrap = el("div", {});
     const variant = decision.destructive ? "danger" : "primary";
-    wrap.innerHTML = `<ds-button variant="${variant}" size="small">${decision.destructive ? "Delete" : "Continue"}</ds-button>`;
+    wrap.innerHTML = `<ds-button variant="${variant}" size="small">${decision.destructive ? "Confirm" : "Continue"}</ds-button>`;
     container.append(wrap);
   }
 
