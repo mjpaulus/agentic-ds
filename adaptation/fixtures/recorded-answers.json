@@ -1,0 +1,103 @@
+{
+  "provenance": "synthetic-hand-authored",
+  "note": "Hand-authored, internally-consistent fixture answers for demo/CI use when TYPESAFE_API_KEY is unset. NOT real Jev output. Run `npm run adaptation:record` with TYPESAFE_API_KEY set to replace this file with live jev-1.13.0 answers (sets provenance to \"recorded-from-jev\").",
+  "model": null,
+  "fixtures": {
+    "reconcile 40 vendor invoices against pos before friday's audit": {
+      "provenance": "synthetic-hand-authored",
+      "context": { "choice": "enterprise-saas", "probabilities": { "consumer-web": 0.08, "enterprise-saas": 0.92 }, "confidence": 0.92 },
+      "components": {
+        "ds-button": 0.85,
+        "ds-label": 0.55,
+        "ds-badge": 0.3,
+        "ds-text-input": 0.8,
+        "ds-checkbox": 0.75,
+        "ds-form-field": 0.85,
+        "ds-search-bar": 0.2
+      },
+      "is_destructive": 0.1,
+      "needs_guidance": 0.15,
+      "gap": 0.05
+    },
+    "sign me up for the newsletter": {
+      "provenance": "synthetic-hand-authored",
+      "context": { "choice": "consumer-web", "probabilities": { "consumer-web": 0.9, "enterprise-saas": 0.1 }, "confidence": 0.9 },
+      "components": {
+        "ds-button": 0.85,
+        "ds-label": 0.7,
+        "ds-badge": 0.1,
+        "ds-text-input": 0.85,
+        "ds-checkbox": 0.3,
+        "ds-form-field": 0.5,
+        "ds-search-bar": 0.1
+      },
+      "is_destructive": 0.05,
+      "needs_guidance": 0.65,
+      "gap": 0.05
+    },
+    "delete my account and all my data": {
+      "provenance": "synthetic-hand-authored",
+      "context": { "choice": "consumer-web", "probabilities": { "consumer-web": 0.62, "enterprise-saas": 0.38 }, "confidence": 0.62 },
+      "components": {
+        "ds-button": 0.9,
+        "ds-label": 0.3,
+        "ds-badge": 0.1,
+        "ds-text-input": 0.2,
+        "ds-checkbox": 0.6,
+        "ds-form-field": 0.2,
+        "ds-search-bar": 0.05
+      },
+      "is_destructive": 0.95,
+      "needs_guidance": 0.5,
+      "gap": 0.05
+    },
+    "search the component catalog for badge variants": {
+      "provenance": "synthetic-hand-authored",
+      "context": { "choice": "enterprise-saas", "probabilities": { "consumer-web": 0.45, "enterprise-saas": 0.55 }, "confidence": 0.55 },
+      "components": {
+        "ds-button": 0.5,
+        "ds-label": 0.3,
+        "ds-badge": 0.4,
+        "ds-text-input": 0.3,
+        "ds-checkbox": 0.1,
+        "ds-form-field": 0.2,
+        "ds-search-bar": 0.9
+      },
+      "is_destructive": 0.05,
+      "needs_guidance": 0.3,
+      "gap": 0.05
+    },
+    "set up a kanban board for my team": {
+      "provenance": "synthetic-hand-authored",
+      "context": { "choice": "enterprise-saas", "probabilities": { "consumer-web": 0.3, "enterprise-saas": 0.7 }, "confidence": 0.7 },
+      "components": {
+        "ds-button": 0.4,
+        "ds-label": 0.3,
+        "ds-badge": 0.2,
+        "ds-text-input": 0.3,
+        "ds-checkbox": 0.2,
+        "ds-form-field": 0.2,
+        "ds-search-bar": 0.1
+      },
+      "is_destructive": 0.05,
+      "needs_guidance": 0.5,
+      "gap": 0.85
+    },
+    "review last month's analytics dashboard": {
+      "provenance": "synthetic-hand-authored",
+      "context": { "choice": "consumer-web", "probabilities": { "consumer-web": 0.52, "enterprise-saas": 0.48 }, "confidence": 0.52 },
+      "components": {
+        "ds-button": 0.3,
+        "ds-label": 0.3,
+        "ds-badge": 0.4,
+        "ds-text-input": 0.2,
+        "ds-checkbox": 0.1,
+        "ds-form-field": 0.2,
+        "ds-search-bar": 0.3
+      },
+      "is_destructive": 0.05,
+      "needs_guidance": 0.4,
+      "gap": 0.2
+    }
+  }
+}

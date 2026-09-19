@@ -34,6 +34,52 @@
   </style>
 </head>
 <body>
+  <section id="m6-adaptive" class="step" style="margin-top: 0;">
+    <h1 style="margin-top: 0;">Adaptive runtime (M6): Jev drives, agentic-ds actuates</h1>
+    <p>
+      A fast typed-decision call to TypeSafe's <code>jev-1.13.0</code> model reads the task you
+      describe and answers a fixed set of questions (<code>adaptation/contract.ts</code>).
+      agentic-ds's existing levers — the <code>data-context</code> flip, registry-validated
+      components, behavioral ctx tokens — act on that decision. Jev is middleware behind a seam
+      (<code>AdaptationDecider</code>); if it's unreachable the page keeps working with the
+      current context and no plan.
+    </p>
+    <p>
+      <span id="m6-mode-badge" class="chip" style="padding: var(--sem-space-inset-control); border-radius: var(--sem-radius-interactive); background: var(--sem-color-surface-bg); border: 1px solid var(--sem-color-input-border); font: var(--sem-type-caption);">
+        loading mode…
+      </span>
+    </p>
+
+    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 1rem 0;">
+      <button type="button" class="m6-preset" data-task="Reconcile 40 vendor invoices against POs before Friday's audit">Reconcile invoices</button>
+      <button type="button" class="m6-preset" data-task="Sign me up for the newsletter">Sign up for newsletter</button>
+      <button type="button" class="m6-preset" data-task="Delete my account and all my data">Delete my account</button>
+      <button type="button" class="m6-preset" data-task="Search the component catalog for badge variants">Search catalog</button>
+      <button type="button" class="m6-preset" data-task="Set up a Kanban board for my team">Set up a Kanban board</button>
+      <button type="button" class="m6-preset" data-task="Review last month's analytics dashboard">Review a dashboard</button>
+    </div>
+
+    <div style="display: flex; gap: 0.5rem;">
+      <input id="m6-task" type="text" placeholder="Describe a task…" style="flex: 1; padding: var(--sem-space-inset-control); border: 1px solid var(--sem-color-input-border); border-radius: var(--sem-radius-interactive);" />
+      <button id="m6-submit" type="button">Ask Jev</button>
+    </div>
+
+    <div id="m6-output" style="margin-top: 1rem; display: none;">
+      <h3>Decision record</h3>
+      <div id="m6-record" class="record"></div>
+
+      <h3>Actuation</h3>
+      <div id="m6-actuation"></div>
+
+      <h3>Task workspace</h3>
+      <div id="m6-workspace" style="border: 1px dashed var(--sem-color-input-border); padding: var(--sem-space-inset-container); border-radius: var(--sem-radius-container);"></div>
+
+      <div id="m6-gap-banner" class="rejection" style="display: none; margin-top: 0.5rem;"></div>
+    </div>
+  </section>
+
+  <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--sem-color-input-border);" />
+
   <h1>Token pipeline demo (M1)</h1>
   <p>
     This page loads <code>tokens/dist/tokens.css</code> directly and flips
@@ -146,7 +192,7 @@
 
   <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--sem-color-input-border);" />
 
-  <h2>Step 2: generate a component (M5)</h2>
+  <h2 id="m5-step2">Step 2: generate a component (M5)</h2>
   <p style="font: var(--sem-type-caption); color: var(--sem-color-text-secondary);">
     Records below are produced by the REAL pipeline at build time
     (<code>npm run build:demo-data</code>, from

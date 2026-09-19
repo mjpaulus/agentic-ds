@@ -41,6 +41,7 @@ TypeScript throughout. Vanilla Web Components, no framework. Vite for build and 
 /components       Generated output. Never hand-edit; regenerate through the pipeline.
 /demo             Demo page with data-context switcher and the five-step demo script from success-criteria.md.
 /test/adversarial The 8+ deliberately broken definitions from P2. These are the pipeline's proof.
+/adaptation       The M6 runtime seam: the Jev (TypeSafe) question/threshold contract, the AdaptationDecider interface, and its live and recorded backends. Design-system content, not implementation detail.
 ```
 
 ## Milestones (target: 3 weeks, tolerances in success-criteria.md)
@@ -54,6 +55,8 @@ TypeScript throughout. Vanilla Web Components, no framework. Vite for build and 
 **M4, days 15–17: Component set.** Remaining atoms and molecules: Text Input, Label, Checkbox, Badge, Form Field, Search Bar. Form Field must demonstrate behavioral ctx tokens (validation-mode). First step: delete the M2 composition-stub registrations for ds-form-field and ds-search-bar (`registerCompositionStubs` in test/helpers.ts) so tests referencing them fail until the real components register — the stubs were name reservations, not implementations (decision recorded 2026-07-11). Exit: P4 green.
 
 **M5, days 18–21: Generation flow + evolution.** Structured-form requirement input → AI-generated definition → pipeline → registration, with justification. Synthetic telemetry, gate logic, promotion and auto-deprecation. Exit: P3 and P5 green, demo script runs end to end.
+
+**M6: Adaptive runtime.** Jev (TypeSafe) as middleware behind an AdaptationDecider seam; the question/threshold contract lives in /adaptation and is design-system content. Exit: recorded-mode demo + contract tests green; live mode via TYPESAFE_API_KEY.
 
 Sequencing rule: the validator exists before the generator. The system that says no is built before the system that creates, or the constraints will be shaped to fit the output instead of the other way around.
 

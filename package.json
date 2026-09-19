@@ -11,7 +11,12 @@
     "test": "vitest run",
     "test:p1": "vitest run tokens",
     "test:p2": "vitest run validator registry test",
-    "test:p5": "vitest run test/evolution"
+    "test:p5": "vitest run test/evolution",
+    "test:m6": "vitest run adaptation",
+    "adaptation:record": "tsx adaptation/record.ts"
+  },
+  "dependencies": {
+    "@typesafe-ai/sdk": "^0.6.0"
   },
   "devDependencies": {
     "@types/node": "^26.1.1",

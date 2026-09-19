@@ -30,6 +30,7 @@ In practice that means:
 | M3 | Generator + rendered verification (Stage 4) | ✅ P2 fully green, P4 partial (button) |
 | M4 | Component set (7 components, both contexts) | ✅ P4 green |
 | M5 | Generation flow + evolution gate | ✅ P3 (7/10 corpus attempts register) + P5 (gate promote/auto-deprecate/invariant) green |
+| M6 | Adaptive runtime (Jev/TypeSafe as middleware) | ✅ recorded-mode demo + contract tests green; live mode via `TYPESAFE_API_KEY` |
 
 ## Quick start
 
@@ -40,6 +41,7 @@ npm run build:components  # definitions → /components (7 real components)
 npm run build:demo-data   # real pipeline records → demo/demo-data.json (M5 demo steps 2-3)
 npm test                  # all tests, P1 through P5
 npm run dev                # then open http://localhost:5173/demo/index.html
+                            # (serves /api/adapt for M6; set TYPESAFE_API_KEY for live Jev, else recorded fixtures)
 ```
 
 The demo page renders token-styled elements and a context toggle. Flipping `data-context` on `<html>` between `consumer-web` and `enterprise-saas` re-skins, re-densifies, and changes behavioral token values with zero component code — every visual difference flows through CSS custom properties emitted per context.
@@ -50,6 +52,26 @@ The demo page renders token-styled elements and a context toggle. Flipping `data
 2. **Generate a component.** Pick one of ten recorded structured requirements, click Generate. The recorded AI-authored definition's real pipeline record (from `npm run build:demo-data`) is replayed: on pass, its justification and a token-styled live preview render; on fail, the exact rejecting stage/constraint/source-span renders instead.
 3. **Poison the pipeline.** Submit a definition whose CSS references a primitive token. Watch it die with the real validation record naming `--prim-color-blue-500` by source span.
 4. **Run the gate.** Live in the browser: seeded synthetic telemetry for ds-button's `standard` vs. `compact-affordance` variants feeds `telemetry/gate.ts`. A winning seed promotes (re-running Stages 2-4 via a precomputed real revalidation record before the registry flips); a losing seed auto-deprecates once the window closes. The status board shows one incumbent per context throughout.
+
+## Adaptive runtime (M6)
+
+A fast typed-decision call to TypeSafe's `jev-1.13.0` model reads a plain-English task description and answers a fixed set of questions defined in [`adaptation/contract.ts`](adaptation/contract.ts): which interface context fits (`consumer-web` vs `enterprise-saas`), which registered components the task needs, whether it's destructive, whether the user likely needs guidance, and whether no registered component fits at all (a "gap"). agentic-ds's existing levers — the `data-context` flip, the registry's composability wall, behavioral ctx tokens — act on that decision; Jev never touches component code, it only picks which existing levers to pull.
+
+Jev sits behind an `AdaptationDecider` seam (`adaptation/decider.ts`), the same injected-backend pattern `telemetry/evolution.ts` and `generation/generate-definition.ts` already use. Two backends implement it:
+
+- **Recorded** (`adaptation/backends/recorded.ts`) — the default. Answers come from `adaptation/fixtures/recorded-answers.json`, a hand-authored, internally-consistent set of 6 example tasks, honestly labeled `"provenance": "synthetic-hand-authored"`. The demo's mode badge always says so.
+- **Live** (`adaptation/backends/typesafe.ts`) — used automatically when `TYPESAFE_API_KEY` is set. Calls the real `jev-1.13.0` model via `@typesafe-ai/sdk`. The key is read server-side only, in `vite.config.ts`'s `/api/adapt` middleware; it is never sent to the browser.
+
+If Jev is unreachable in either mode, the decision falls back to "keep the current context, no component plan, mode unavailable" — Jev is middleware, not load-bearing, and the page keeps working.
+
+To replace the fixtures with real recorded output:
+
+```sh
+export TYPESAFE_API_KEY=...
+npm run adaptation:record   # rewrites adaptation/fixtures/recorded-answers.json from live jev-1.13.0 answers
+```
+
+Try it in the demo: open the "Adaptive runtime (M6)" section at the top of the page, click one of the six preset tasks (or type your own), and watch the decision record, the context flip/suggestion, and the assembled task workspace render from Jev's answers.
 
 ## How the token pipeline works
 
@@ -95,7 +117,11 @@ See [specs/success-criteria.md](specs/success-criteria.md) for the falsifiable c
 /test/generation   Ten structured requirements + ten recorded good-faith attempts (P3 corpus),
                    run once through the real pipeline. results.md records the honest outcome.
 /demo              Demo page: context switcher (M1) plus the M5 generate/poison/gate-simulation
-                   steps, backed by demo/build-demo-data.ts's real pipeline records.
+                   steps, backed by demo/build-demo-data.ts's real pipeline records, plus the
+                   M6 adaptive-runtime section at the top.
+/adaptation        M6: the Jev (TypeSafe) question/threshold contract (adaptation/contract.ts),
+                   the AdaptationDecider seam, and its live (adaptation/backends/typesafe.ts)
+                   and recorded (adaptation/backends/recorded.ts) implementations.
 ```
 
 The sequencing rule: the validator exists before the generator. The system that says no is built before the system that creates.
